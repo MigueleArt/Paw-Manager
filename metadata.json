@@ -1,0 +1,6 @@
+{
+  "name": "PawManager",
+  "description": "SaaS para centros de adopción animal, refugios y rescatistas independientes. Gestiona fichas, adopciones, vacunas y voluntarios en un solo lugar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
