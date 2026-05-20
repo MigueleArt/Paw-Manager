@@ -103,10 +103,11 @@ PawManager está diseñado para evolucionar hacia un SaaS completo con:
 - Reportes de impacto para donantes
 - Roles y permisos para voluntarios
 
-## Licencia
-
-Proyecto privado. Consulta al autor para condiciones de uso.
 
 ## Autor
 
-[MigueleArt](https://github.com/MigueleArt) — [Paw-Manager](https://github.com/MigueleArt/Paw-Manager)
+-José Miguel Jimenez Enriquez
+-Carlos Alberto Pacheco Avila
+-José Alberto Herrera Flores 
+-Jesús Emmanuel Cruz Orea 
+
