@@ -23,7 +23,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [petCount, setPetCount] = useState("");
-  
+
   // validation states
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,7 +32,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
   // Form handle
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // reset errors
     const currentErrors: { [key: string]: string } = {};
     if (!shelterName.trim()) currentErrors.shelterName = "El nombre de la organización es obligatorio";
@@ -52,41 +52,60 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
     setErrors({});
     setIsSubmitting(true);
 
-    // Simulate server side request for SaaS feel
-    setTimeout(() => {
-      const newEntry: WaitlistEntry = {
-        id: "WLT-" + Math.floor(Math.random() * 9000 + 1000),
-        shelterName,
-        userName,
-        email,
-        whatsapp: whatsapp || undefined,
-        petCount,
-        timestamp: new Date().toISOString()
-      };
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdvAI5MQoQJJ3fGujbCsj2ylpiJegP0WzDZ7A52m-4U4EG1nA/formResponse";
+    const formData = new FormData();
+    formData.append("entry.1732942400", shelterName);
+    formData.append("entry.483762169", userName);
+    formData.append("entry.758779826", email);
+    if (whatsapp) {
+      formData.append("entry.342753457", whatsapp);
+    }
+    formData.append("entry.1079769614", petCount);
 
-      // 1. Store in localStorage fallback
-      try {
-        const stored = localStorage.getItem("pawmanager_beta_waitlist");
-        const list = stored ? JSON.parse(stored) : [];
-        list.push(newEntry);
-        localStorage.setItem("pawmanager_beta_waitlist", JSON.stringify(list));
-      } catch (err) {
-        console.error("No se pudo guardar en localStorage", err);
-      }
+    fetch(FORM_URL, {
+      method: "POST",
+      body: formData,
+      mode: "no-cors",
+    })
+      .then(() => {
+        const newEntry: WaitlistEntry = {
+          id: "WLT-" + Math.floor(Math.random() * 9000 + 1000),
+          shelterName,
+          userName,
+          email,
+          whatsapp: whatsapp || undefined,
+          petCount,
+          timestamp: new Date().toISOString()
+        };
 
-      // 2. Bubble up to App.tsx reactive state
-      onRegisterSuccess(newEntry);
+        // 1. Store in localStorage fallback
+        try {
+          const stored = localStorage.getItem("pawmanager_beta_waitlist");
+          const list = stored ? JSON.parse(stored) : [];
+          list.push(newEntry);
+          localStorage.setItem("pawmanager_beta_waitlist", JSON.stringify(list));
+        } catch (err) {
+          console.error("No se pudo guardar en localStorage", err);
+        }
 
-      setIsSubmitting(false);
-      setIsSuccess(true);
+        // 2. Bubble up to App.tsx reactive state
+        onRegisterSuccess(newEntry);
 
-      // reset inputs
-      setShelterName("");
-      setUserName("");
-      setEmail("");
-      setWhatsapp("");
-      setPetCount("");
-    }, 1500);
+        setIsSubmitting(false);
+        setIsSuccess(true);
+
+        // reset inputs
+        setShelterName("");
+        setUserName("");
+        setEmail("");
+        setWhatsapp("");
+        setPetCount("");
+      })
+      .catch((error) => {
+        console.error("Error al enviar el formulario a Google Forms", error);
+        setIsSubmitting(false);
+        alert("Hubo un error al enviar la solicitud. Por favor intenta de nuevo.");
+      });
   };
 
   return (
@@ -96,15 +115,15 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
       <div className="absolute bottom-1/4 left-0 w-80 h-80 bg-[#F4845F]/10 rounded-full blur-3xl -z-10" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Main curved layout container */}
         <div className="bg-white rounded-[2.5rem] border border-[#F4845F]/15 shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-12">
-          
+
           {/* Informative Left Sidebar Panel (Cozy and emotional pitch) */}
           <div className="md:col-span-5 bg-[#2D6A4F] text-white p-8 sm:p-10 flex flex-col justify-between text-left relative">
             {/* Paw background pattern hint */}
             <div className="absolute inset-0 bg-[#1B4332]/20 mix-blend-overlay pointer-events-none" />
-            
+
             <div className="space-y-6 relative z-10">
               <div className="bg-white/10 p-3 rounded-2xl w-12 h-12 flex items-center justify-center">
                 <Heart className="h-6 w-6 fill-[#E9C46A] text-[#E9C46A]" />
@@ -116,31 +135,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                 Estamos abriendo accesos semanales ordenados para asegurar la mejor asesoría técnica directa a cada refugio.
               </p>
 
-              <div className="space-y-4 pt-4 border-t border-emerald-100/15">
-                <div className="flex items-start space-x-3 text-xs">
-                  <CheckCircle className="h-4.5 w-4.5 text-[#E9C46A] shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="block text-[#E9C46A]">Acceso Gratuito de por Vida</strong>
-                    <span className="text-gray-300">Como pionero beta, tu plan básico nunca tendrá costo.</span>
-                  </div>
-                </div>
 
-                <div className="flex items-start space-x-3 text-xs">
-                  <CheckCircle className="h-4.5 w-4.5 text-[#E9C46A] shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="block text-[#E9C46A]">Migración de Excel Incluida</strong>
-                    <span className="text-gray-300">Convertimos tus archivos actuales sin cargo alguno.</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3 text-xs">
-                  <CheckCircle className="h-4.5 w-4.5 text-[#E9C46A] shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="block text-[#E9C46A]">Soporte Humano Directo</strong>
-                    <span className="text-gray-300">Por WhatsApp o Meet para capacitar a tu equipo.</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Shield disclaimer */}
@@ -156,7 +151,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
               Sé de los primeros en acceder
             </h4>
             <p className="text-sm text-gray-500 mb-6 font-sans">
-              Estamos en fase beta cerrada. Regístrate y te contactaremos para darte acceso gratuito en menos de 24 horas.
+              Regístrate y te contactaremos para darte acceso gratuito en menos de 24 horas.
             </p>
 
             <AnimatePresence mode="wait">
@@ -178,9 +173,8 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                       value={shelterName}
                       onChange={(e) => setShelterName(e.target.value)}
                       placeholder="Ej. Albergue La Esperanza MTY"
-                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${
-                        errors.shelterName ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
-                      } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800`}
+                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.shelterName ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
+                        } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800`}
                     />
                     {errors.shelterName && (
                       <p className="text-xs text-red-600 flex items-center space-x-1 font-sans">
@@ -202,9 +196,8 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
                         placeholder="Ej. Juan Pérez"
-                        className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${
-                          errors.userName ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
-                        } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800`}
+                        className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.userName ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
+                          } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800`}
                       />
                       {errors.userName && (
                         <p className="text-xs text-red-600 flex items-center space-x-1">
@@ -224,9 +217,8 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="ejemplo@refugio.org"
-                        className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${
-                          errors.email ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
-                        } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800`}
+                        className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.email ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
+                          } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800`}
                       />
                       {errors.email && (
                         <p className="text-xs text-red-600 flex items-center space-x-1">
@@ -260,9 +252,8 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                     <select
                       value={petCount}
                       onChange={(e) => setPetCount(e.target.value)}
-                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${
-                        errors.petCount ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
-                      } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800 cursor-pointer`}
+                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.petCount ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
+                        } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800 cursor-pointer`}
                     >
                       <option value="">Selecciona una opción</option>
                       <option value="1-10">1 a 10 mascotas</option>
@@ -294,7 +285,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                         </>
                       ) : (
                         <>
-                          <span>¡Quiero acceso gratuito!</span>
+                          <span>¡Quiero acceso!</span>
                           <Send className="h-4.5 w-4.5" />
                         </>
                       )}
@@ -317,7 +308,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                   <p className="text-sm text-gray-700 font-sans max-w-md mx-auto leading-relaxed">
                     Hemos agendado tu pre-registro con éxito. Tu organización ha sido añadida a la lista de espera activa y te enviaremos tu liga de acceso al correo registrado.
                   </p>
-                  
+
                   <div className="bg-white p-4 rounded-2xl border border-emerald-100 shadow-xs max-w-sm mx-auto text-xs text-left space-y-2">
                     <p className="font-bold text-[#2D6A4F] flex items-center space-x-1">
                       <span>✓ Expediente Pre-Aprobado</span>

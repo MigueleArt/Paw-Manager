@@ -5,7 +5,7 @@ import Problems from "./components/Problems";
 import Solution from "./components/Solution";
 import Benefits from "./components/Benefits";
 import PetGallery from "./components/PetGallery";
-import SocialProof from "./components/SocialProof";
+
 import CTAForm from "./components/CTAForm";
 import Footer from "./components/Footer";
 import { motion, AnimatePresence } from "motion/react";
@@ -72,8 +72,7 @@ export default function App() {
         {/* EMOTIONAL GALLERY */}
         <PetGallery />
 
-        {/* TESTIMONIALS & SOCIAL PROOF */}
-        <SocialProof waitlist={waitlist} />
+
 
         {/* REGISTRATION FORM (THE MAIN CTA CONVERSION DRIVER) */}
         <CTAForm onRegisterSuccess={handleRegisterSuccess} />
