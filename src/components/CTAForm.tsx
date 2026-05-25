@@ -151,7 +151,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
               Sé de los primeros en acceder
             </h4>
             <p className="text-sm text-gray-500 mb-6 font-sans">
-              Regístrate y te contactaremos para darte acceso gratuito en menos de 24 horas.
+              Regístrate y te contactaremos para darte acceso en menos de 24 horas.
             </p>
 
             <AnimatePresence mode="wait">
@@ -314,7 +314,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                       <span>✓ Expediente Pre-Aprobado</span>
                     </p>
                     <p className="text-gray-500 font-sans">
-                      Aceleramos la entrega de tu plan Beta Gratuito. Recibirás un mensaje de WhatsApp técnico para confirmar tu importación de Excel.
+                      Aceleramos la entrega de tu plan Beta. Recibirás un mensaje de WhatsApp técnico para confirmar tu importación de Excel.
                     </p>
                   </div>
 
