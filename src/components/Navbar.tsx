@@ -28,11 +28,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
           ? "bg-[#FDF8F0]/90 backdrop-blur-md shadow-sm border-b border-[#F4845F]/10 py-3"
           : "bg-transparent py-5"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
@@ -91,7 +90,7 @@ export default function Navbar() {
               onClick={() => scrollToSection("registro")}
               className="bg-[#2D6A4F] hover:bg-[#1B4332] text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-colors duration-250 flex items-center space-x-2 shadow-md shadow-[#2D6A4F]/10 cursor-pointer"
             >
-              <span>Quiero probarlo gratis</span>
+              <span>Quiero probarlo</span>
               <ArrowRight className="h-4 w-4" />
             </motion.button>
           </div>
@@ -156,7 +155,7 @@ export default function Navbar() {
               onClick={() => scrollToSection("registro")}
               className="w-full mt-2 bg-[#2D6A4F] text-white px-4 py-3 rounded-xl text-center font-bold transition-all flex items-center justify-center space-x-2"
             >
-              <span>Quiero probarlo gratis</span>
+              <span>Quiero probarlo</span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </motion.div>

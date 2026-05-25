@@ -66,7 +66,7 @@ export default function Hero() {
             >
               <div className="flex items-center space-x-2 bg-white/60 p-2.5 rounded-xl border border-[#2D6A4F]/10">
                 <CheckCircle className="h-4 w-4 text-[#2D6A4F] shrink-0" />
-                <span>100% gratis en beta</span>
+                <span>Acceso en beta</span>
               </div>
               <div className="flex items-center space-x-2 bg-white/60 p-2.5 rounded-xl border border-[#2D6A4F]/10">
                 <CheckCircle className="h-4 w-4 text-[#2D6A4F] shrink-0" />
@@ -91,7 +91,7 @@ export default function Hero() {
                 onClick={() => scrollToSection("registro")}
                 className="bg-[#F4845F] hover:bg-[#e26d47] text-white text-base font-bold py-4 px-8 rounded-2xl shadow-lg shadow-[#F4845F]/20 transition-all duration-200 flex items-center justify-center space-x-3 cursor-pointer group"
               >
-                <span>Registrarme Gratis</span>
+                <span>Registrarme</span>
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </motion.button>
 
@@ -106,21 +106,7 @@ export default function Hero() {
               </motion.button>
             </motion.div>
 
-            {/* Live Counter Info */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex items-center space-x-4 pt-4 text-xs text-gray-500 font-mono"
-            >
-              <span className="flex h-2.5 w-2.5 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
-              <span>12 Centros de adopción activos esta semana</span>
-              <span>•</span>
-              <span className="text-[#2D6A4F] font-bold">148 mascotas dadas en adopción</span>
-            </motion.div>
+
 
           </div>
 
@@ -435,7 +421,7 @@ export default function Hero() {
 
                   {/* Register prompt action inside sandbox */}
                   <div className="bg-[#2D6A4F] text-white p-3 rounded-xl flex items-center justify-between text-xs mt-2">
-                    <span>¿Te gusta cómo funciona? Únete gratis hoy</span>
+                    <span>¿Te gusta cómo funciona? Únete hoy</span>
                     <button
                       onClick={() => {
                         setShowDemoModal(false);
