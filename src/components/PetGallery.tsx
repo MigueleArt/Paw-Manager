@@ -47,7 +47,7 @@ export default function PetGallery() {
       id: "P-04",
       name: "Milo",
       species: "cat",
-      img: "https://images.unsplash.com/photo-1518791841217-8f162f1912da?w=800&q=80",
+      img: "https://nupec.com/wp-content/uploads/2022/02/cat-watching-2021-08-26-15-42-24-utc.jpg",
       age: "4 meses",
       gender: "Macho",
       tags: ["Curioso", "Travieso", "Desparasitado"]
@@ -76,13 +76,13 @@ export default function PetGallery() {
 
   return (
     <section id="galeria" className="py-20 bg-paw-pattern relative overflow-hidden">
-      
+
       {/* Visual Accent Blurs */}
       <div className="absolute top-10 left-10 w-48 h-48 bg-[#F4845F]/5 rounded-full blur-2xl" />
       <div className="absolute bottom-10 right-10 w-64 h-64 bg-[#2D6A4F]/5 rounded-full blur-2xl" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        
+
         {/* Section Header */}
         <div className="max-w-3xl mx-auto space-y-4 mb-12">
           <div className="inline-flex items-center space-x-2 bg-[#E9C46A]/20 text-[#805B10] px-4 py-1.5 rounded-full text-xs font-semibold shadow-inner font-mono">
@@ -93,7 +93,7 @@ export default function PetGallery() {
             Cada uno merece una historia bien contada
           </h2>
           <p className="text-gray-600 font-sans">
-            PawManager te permite crear páginas públicas de adopción de alto impacto emocional con buenas fotos, 
+            PawManager te permite crear páginas públicas de adopción de alto impacto emocional con buenas fotos,
             tags personalizados y formularios de pre-adopción integrados.
           </p>
         </div>
@@ -102,40 +102,37 @@ export default function PetGallery() {
         <div className="flex items-center justify-center space-x-3 mb-12">
           <button
             onClick={() => setFilterType("all")}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
-              filterType === "all"
-                ? "bg-[#2D6A4F] text-white shadow-md shadow-[#2D6A4F]/20"
-                : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
-            }`}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${filterType === "all"
+              ? "bg-[#2D6A4F] text-white shadow-md shadow-[#2D6A4F]/20"
+              : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+              }`}
           >
             Todos ({pets.length})
           </button>
-          
+
           <button
             onClick={() => setFilterType("dog")}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
-              filterType === "dog"
-                ? "bg-[#2D6A4F] text-white shadow-md shadow-[#2D6A4F]/20"
-                : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
-            }`}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${filterType === "dog"
+              ? "bg-[#2D6A4F] text-white shadow-md shadow-[#2D6A4F]/20"
+              : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+              }`}
           >
             🐕 Perros
           </button>
 
           <button
             onClick={() => setFilterType("cat")}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
-              filterType === "cat"
-                ? "bg-[#2D6A4F] text-white shadow-md shadow-[#2D6A4F]/20"
-                : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
-            }`}
+            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${filterType === "cat"
+              ? "bg-[#2D6A4F] text-white shadow-md shadow-[#2D6A4F]/20"
+              : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+              }`}
           >
             🐈 Gatos
           </button>
         </div>
 
         {/* Dynamic Grid Layout */}
-        <motion.div 
+        <motion.div
           layout
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
         >
@@ -159,10 +156,10 @@ export default function PetGallery() {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
-                  
+
                   {/* Photo Soft Overlay for details read */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#1B4332]/80 via-transparent to-transparent opacity-60" />
-                  
+
                   {/* Floating ID badge */}
                   <span className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-mono text-gray-700 font-bold border border-[#F4845F]/10">
                     ID: {pet.id}
@@ -196,11 +193,7 @@ export default function PetGallery() {
                     ))}
                   </div>
 
-                  <div className="pt-4 border-t border-dashed border-gray-100 flex items-center justify-between text-xs text-gray-500">
-                    <span className="flex items-center space-x-1">
-                      <Heart className="h-3.5 w-3.5 fill-red-500 text-red-500" />
-                      <strong>4 Candidatos</strong>
-                    </span>
+                  <div className="pt-4 border-t border-dashed border-gray-100 flex items-center justify-end text-xs text-gray-500">
                     <button
                       onClick={() => {
                         const registerSection = document.getElementById("registro");
@@ -219,12 +212,6 @@ export default function PetGallery() {
           </AnimatePresence>
         </motion.div>
 
-        {/* Motivational Callout */}
-        <div className="mt-12 bg-white/75 backdrop-blur-md border border-[#F4845F]/15 rounded-2xl p-6 max-w-2xl mx-auto text-center space-y-3 shadow-xs">
-          <p className="text-sm font-sans text-gray-700 italic">
-            "Las fichas públicas de PawManager tienen plantillas SEO avanzadas para indexarse en Google e incrementar las visitas en un 34%."
-          </p>
-        </div>
 
       </div>
     </section>
