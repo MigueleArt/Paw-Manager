@@ -53,8 +53,8 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-gray-700 font-sans max-w-2xl leading-relaxed"
             >
-              Deja de perder mascotas entre hojas de Excel y mensajes de WhatsApp. 
-              Organiza fichas médicas, solicitudes de adopción, vacunas y voluntarios en un solo lugar.
+              Deja de perder citas entre hojas de Excel y mensajes de WhatsApp. 
+              Organiza agenda de consultas médicas y estética, historial clínico y recordatorios de tus pacientes en un solo lugar.
             </motion.p>
 
             {/* Trust checkmarks */}
@@ -74,7 +74,7 @@ export default function Hero() {
               </div>
               <div className="flex items-center space-x-2 bg-white/60 p-2.5 rounded-xl border border-[#2D6A4F]/10">
                 <CheckCircle className="h-4 w-4 text-[#2D6A4F] shrink-0" />
-                <span>Hecho para refugios</span>
+                <span>Hecho para veterinarias</span>
               </div>
             </motion.div>
 
@@ -123,8 +123,8 @@ export default function Hero() {
             {/* Framed Hero Image */}
             <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white aspect-[4/5] sm:aspect-square lg:aspect-[4/5] object-cover group">
               <img
-                src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&q=80"
-                alt="Adorables mascotas esperando por un hogar"
+                src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=1200&q=80"
+                alt="Veterinaria revisando a una mascota en consulta"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
@@ -136,7 +136,7 @@ export default function Hero() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-mono text-gray-500">ESTADO DE HOY</p>
-                  <p className="text-sm font-semibold text-gray-800">¡3 Adopciones Hoy!</p>
+                  <p className="text-sm font-semibold text-gray-800">¡8 Citas Agendadas Hoy!</p>
                 </div>
               </div>
 
@@ -144,14 +144,14 @@ export default function Hero() {
                 <div className="flex items-center justify-between pb-2 border-b border-white/10">
                   <div className="flex items-center space-x-2">
                     <Activity className="h-4 w-4 text-[#E9C46A]" />
-                    <span className="text-xs font-mono text-gray-300 font-bold tracking-wider">EXPEDIENTE CENTRAL</span>
+                    <span className="text-xs font-mono text-gray-300 font-bold tracking-wider">AGENDA CENTRAL</span>
                   </div>
-                  <span className="bg-[#F4845F] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Listo para Adopción</span>
+                  <span className="bg-[#F4845F] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Próxima Cita: 10:30 AM</span>
                 </div>
                 <div className="flex items-center justify-between pt-2">
                   <div>
                     <h4 className="text-white font-serif font-bold text-lg">"Toby"</h4>
-                    <p className="text-xs text-gray-300">Golden Retriever • 1.5 años • Vacunado</p>
+                    <p className="text-xs text-gray-300">Golden Retriever • 1.5 años • Consulta General</p>
                   </div>
                   <span className="text-2xl">🐕</span>
                 </div>
