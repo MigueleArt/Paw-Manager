@@ -1,6 +1,6 @@
 # PawManager
 
-Landing page de **PawManager**, un SaaS pensado para centros de adopción animal, refugios y rescatistas independientes. Centraliza fichas de mascotas, adopciones, vacunas y voluntarios en un solo lugar, sustituyendo hojas de Excel y chats dispersos de WhatsApp.
+Landing page de PawManager, un SaaS pensado para clínicas veterinarias y consultorios veterinarios. Centraliza fichas de mascotas, citas, historiales médicos, vacunación y datos de propietarios en un solo lugar, sustituyendo hojas de Excel y mensajes dispersos de WhatsApp.
 
 > **Estado actual:** versión beta — landing de captación con formulario de pre-registro. Los datos de la waitlist se guardan en `localStorage` del navegador.
 
