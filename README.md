@@ -9,12 +9,13 @@ Landing page de PawManager, un SaaS pensado para clínicas veterinarias y consul
 | Sección | Descripción |
 |---------|-------------|
 | **Hero** | Propuesta de valor, badges de confianza y modal de demo interactivo |
-| **Problemas** | Pain points habituales en refugios (Excel, WhatsApp, vacunas olvidadas) |
-| **Solución** | Vista previa de funcionalidades del producto (fichas, Kanban de adopciones, recordatorios, etc.) |
-| **Beneficios** | Impacto esperado: expedientes, adopciones más rápidas, seguimiento post-adopción |
+| **Problemas** | Problemas habituales en veterinarias (Excel, WhatsApp, vacunas olvidadas) |
+| **Solución** | Vista previa de funcionalidades del producto (fichas, gestión de citas veterinarias, recordatorios, etc.) |
+| **Beneficios** | Impacto esperado: expedientes, mejor administración de pacientes
+seguimiento médico eficiente |
 | **Galería** | Bloque emocional con imágenes de mascotas |
 | **Prueba social** | Testimonios y contador dinámico de refugios en la waitlist |
-| **Formulario CTA** | Pre-registro a la beta (nombre del refugio, contacto, rango de mascotas) |
+| **Formulario CTA** | Pre-registro a la beta (nombre de la veterinaria, contacto, rango de mascotas) |
 | **Footer** | Enlaces y cierre de marca |
 
 ## Stack tecnológico
