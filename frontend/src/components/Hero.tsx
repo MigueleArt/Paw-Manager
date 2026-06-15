@@ -196,7 +196,7 @@ export default function Hero() {
                   </div>
                   <div>
                     <h3 className="font-serif font-bold text-lg">Simulador de Ficha PawManager</h3>
-                    <p className="text-xs text-emerald-100 font-sans">Mira cómo se vería tu panel en segundos</p>
+                    <p className="text-xs text-emerald-100 font-sans">Mira cómo se vería tu agenda y expedientes en segundos</p>
                   </div>
                 </div>
                 <button
@@ -212,7 +212,7 @@ export default function Hero() {
                 
                 {/* Left controls */}
                 <div className="md:col-span-4 flex flex-col space-y-3">
-                  <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">Elige una Mascota</p>
+                  <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">Elige un Paciente</p>
                   
                   <button
                     onClick={() => setActiveDemoTab("dogs")}
@@ -225,7 +225,7 @@ export default function Hero() {
                     <span className="text-xl">🐕</span>
                     <div>
                       <h4 className="font-semibold text-sm text-gray-800">Toby (Perro)</h4>
-                      <p className="text-xs text-gray-500">Pendiente de desparasitación</p>
+                      <p className="text-xs text-gray-500">Cita de control - Hoy 10:30 AM</p>
                     </div>
                   </button>
 
@@ -240,7 +240,7 @@ export default function Hero() {
                     <span className="text-xl">🐈</span>
                     <div>
                       <h4 className="font-semibold text-sm text-gray-800">Luna (Gato)</h4>
-                      <p className="text-xs text-gray-500">Vacunación Completa</p>
+                      <p className="text-xs text-gray-500">Sesión de estética - Mañana</p>
                     </div>
                   </button>
 
@@ -255,13 +255,13 @@ export default function Hero() {
                     <span className="text-xl">🐇</span>
                     <div>
                       <h4 className="font-semibold text-sm text-gray-800">Copito (Conejo)</h4>
-                      <p className="text-xs text-gray-500">Rescatado ayer por voluntario</p>
+                      <p className="text-xs text-gray-500">Consulta de urgencia - Ayer</p>
                     </div>
                   </button>
 
                   <div className="bg-[#E9C46A]/20 p-4 rounded-2xl border border-[#E9C46A]/30 mt-4">
                     <p className="text-xs text-[#805B10] font-semibold leading-relaxed">
-                      💡 En el sistema completo, un voluntario puede escanear un QR en la jaula para actualizar estas fichas médicas al instante.
+                      💡 En el sistema completo, tu equipo puede confirmar citas y actualizar el historial médico desde el celular en tiempo real.
                     </p>
                   </div>
                 </div>
@@ -284,7 +284,7 @@ export default function Hero() {
                           </div>
                         </div>
                         <span className="bg-[#F4845F]/20 text-[#F4845F] text-xs font-bold px-3 py-1 rounded-full border border-[#F4845F]/30">
-                          Urgente • Falta Vacuna Sextuple
+                          Hoy • Consulta General 10:30 AM
                         </span>
                       </div>
 
@@ -294,16 +294,16 @@ export default function Hero() {
                           <span className="font-semibold text-gray-800">1 año, 6 meses</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Ingreso</span>
-                          <span className="font-semibold text-gray-800">14 Abril 2026</span>
+                          <span className="text-gray-500 block">Dueño</span>
+                          <span className="font-semibold text-gray-800">Mariana López</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Ubicación</span>
-                          <span className="font-semibold text-gray-800">Jaula 4B (Temporal Poniente)</span>
+                          <span className="text-gray-500 block">Motivo de Cita</span>
+                          <span className="font-semibold text-gray-800">Chequeo de rutina</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Adoptantes Interesados</span>
-                          <span className="font-semibold text-[#2D6A4F]">4 Solicitudes activas</span>
+                          <span className="text-gray-500 block">Citas Futuras</span>
+                          <span className="font-semibold text-[#2D6A4F]">1 Programada (Vacuna)</span>
                         </div>
                       </div>
 
@@ -316,7 +316,7 @@ export default function Hero() {
                           </li>
                           <li className="flex items-center space-x-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                            <span>Desparasitación Triple - <strong>Pendiente</strong> (Próx Jueves)</span>
+                            <span>Vacuna Sextuple - <strong>Programada</strong> (Próx Jueves)</span>
                           </li>
                         </ul>
                       </div>
@@ -338,7 +338,7 @@ export default function Hero() {
                           </div>
                         </div>
                         <span className="bg-[#2D6A4F]/20 text-[#2D6A4F] text-xs font-bold px-3 py-1 rounded-full border border-[#2D6A4F]/30">
-                          Expediente Completo
+                          Mañana • Baño y Corte 09:00 AM
                         </span>
                       </div>
 
@@ -348,12 +348,12 @@ export default function Hero() {
                           <span className="font-semibold text-gray-800">8 meses</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Ingreso</span>
-                          <span className="font-semibold text-gray-800">01 Mayo 2026</span>
+                          <span className="text-gray-500 block">Dueño</span>
+                          <span className="font-semibold text-gray-800">Carlos Ruiz</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Esterilización</span>
-                          <span className="font-semibold text-[#2D6A4F]">Realizada ✓</span>
+                          <span className="text-gray-500 block">Servicio</span>
+                          <span className="font-semibold text-gray-800">Baño + Corte de uñas</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
                           <span className="text-gray-500 block">Temperamento</span>
@@ -385,7 +385,7 @@ export default function Hero() {
                           </div>
                         </div>
                         <span className="bg-amber-100 text-[#805B10] text-xs font-bold px-3 py-1 rounded-full border border-amber-200">
-                          Recién Rescatado
+                          Ayer • Consulta de Urgencia
                         </span>
                       </div>
 
@@ -395,15 +395,15 @@ export default function Hero() {
                           <span className="font-semibold text-gray-800">Desconocida (~1 año)</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Ingreso</span>
-                          <span className="font-semibold text-gray-800">Ayer, 04:12 Z</span>
-                        </div>
-                        <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Rescatista</span>
+                          <span className="text-gray-500 block">Dueño</span>
                           <span className="font-semibold text-gray-800">Lucía Mendoza</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Situación</span>
+                          <span className="text-gray-500 block">Motivo</span>
+                          <span className="font-semibold text-gray-800">Pérdida de apetito</span>
+                        </div>
+                        <div className="bg-[#FDF8F0] p-3 rounded-xl">
+                          <span className="text-gray-500 block">Estado</span>
                           <span className="font-semibold text-red-600">En observación médica</span>
                         </div>
                       </div>
@@ -411,9 +411,9 @@ export default function Hero() {
                       <div className="border-t border-gray-100 pt-3">
                         <h5 className="font-semibold text-xs text-gray-500 mb-2 uppercase tracking-wide">Acciones Inmediatas</h5>
                         <div className="flex flex-wrap gap-2">
-                          <span className="bg-red-50 text-red-700 border border-red-100 text-[11px] font-medium px-2 py-1 rounded-lg">Programar Baño Especial</span>
+                          <span className="bg-red-50 text-red-700 border border-red-100 text-[11px] font-medium px-2 py-1 rounded-lg">Agendar Cita de Seguimiento</span>
                           <span className="bg-amber-50 text-amber-800 border border-amber-100 text-[11px] font-medium px-2 py-1 rounded-lg">Examen Coprológico</span>
-                          <span className="bg-gray-50 text-gray-600 border border-gray-100 text-[11px] font-medium px-2 py-1 rounded-lg">Subir Fotos de Ingreso</span>
+                          <span className="bg-gray-50 text-gray-600 border border-gray-100 text-[11px] font-medium px-2 py-1 rounded-lg">Agregar Nota al Historial</span>
                         </div>
                       </div>
                     </motion.div>
