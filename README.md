@@ -97,12 +97,12 @@ pawmanager/
 
 PawManager está diseñado para evolucionar hacia un SaaS completo con:
 
-- Ficha digital por mascota (fotos, vacunas, historial médico)
-- Tablero Kanban de adopciones
-- Recordatorios automáticos (vacunas, desparasitaciones)
-- Comunicación centralizada y seguimiento post-adopción
-- Reportes de impacto para donantes
-- Roles y permisos para voluntarios
+- Ficha digital por mascota (fotos, vacunas e historial médico)
+- Agenda y gestión de citas veterinarias
+- Recordatorios automáticos de vacunas y consultas
+- Seguimiento médico y tratamientos
+- Gestión de propietarios y mascotas
+- Roles y permisos para personal veterinario
 
 
 ## Autor
