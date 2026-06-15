@@ -5,31 +5,31 @@ import { Heart, Activity, CheckCircle, ShieldCheck, HeartHandshake } from "lucid
 export default function Benefits() {
   const benefitsList = [
     {
-      img: "https://images.unsplash.com/photo-1615789591457-74a63395c990?w=800&q=80",
-      alt: "Lindo gatito mirando tiernamente",
-      title: "Nunca pierdas la historia de una mascota",
-      tagline: "EXPEDIENTE REFORZADO",
-      emoji: "🐈",
-      description: "Sabrás exactamente de dónde viene, qué vacunas le faltan y qué voluntario conoce mejor su temperamento. Protege su memoria digital para siempre.",
+      img: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800&q=80",
+      alt: "Veterinaria revisando el expediente digital de un paciente",
+      title: "Nunca pierdas el historial médico de un paciente",
+      tagline: "EXPEDIENTE CLÍNICO DIGITAL",
+      emoji: "🩺",
+      description: "Consulta vacunas, tratamientos, diagnósticos y notas de cada visita desde cualquier dispositivo. Todo el historial de tus pacientes, siempre a la mano.",
       badge: "Sincronizado"
     },
     {
-      img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&q=80",
-      alt: "Perritos sanos y felices jugando en la hierba",
-      title: "Acelera el proceso de adopción",
-      tagline: "PROCESOS ÁGILES",
-      emoji: "🐕",
-      description: "Recibe solicitudes filtradas que cumplen con tu perfil para agendar entrevistas más rápido. Olvídate de chats infinitos de WhatsApp.",
-      badge: "-50% Tiempo de espera"
+      img: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&q=80",
+      alt: "Recepcionista de veterinaria agendando una cita en computadora",
+      title: "Agenda citas médicas y de estética sin choques de horario",
+      tagline: "AGENDA INTELIGENTE",
+      emoji: "📅",
+      description: "Organiza consultas, vacunación, baños y cortes en un solo calendario. Recordatorios automáticos reducen las ausencias y los espacios vacíos.",
+      badge: "-50% Inasistencias"
     },
     {
-      img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&q=80",
-      alt: "Perro feliz listo para dar amor",
-      title: "Haz seguimiento post-adopción sin esfuerzo",
-      tagline: "SEGUIMIENTO AMOROSO",
-      emoji: "🏡",
-      description: "Automatiza encuestas rápidas de adaptación para asegurarte de que están bien. Todo el reporte histórico queda anexado a su expediente original.",
-      badge: "+92% Contacto Activo"
+      img: "https://images.unsplash.com/photo-1612531822719-d0bdc44b6f5a?w=800&q=80",
+      alt: "Veterinario sonriente entregando una mascota saludable a su dueño",
+      title: "Da seguimiento post-consulta sin esfuerzo",
+      tagline: "SEGUIMIENTO CLÍNICO",
+      emoji: "❤️‍🩹",
+      description: "Programa recordatorios de próximas dosis, controles y revisiones. Cada seguimiento queda anexado automáticamente al expediente del paciente.",
+      badge: "+92% Pacientes al Día"
     }
   ];
 
@@ -43,10 +43,10 @@ export default function Benefits() {
             El Impacto Real de PawManager
           </span>
           <h2 className="text-3xl sm:text-4xl font-serif font-black text-[#1B4332] leading-tight">
-            Más adopciones responsables. Menos caos administrativo.
+            Más citas atendidas. Menos caos administrativo.
           </h2>
           <p className="text-gray-600 font-sans max-w-2xl mx-auto">
-            Hacemos que lo complejo se sienta natural, devolviéndote valioso tiempo libre para enfocarte en lo que de verdad importa: el bienestar animal.
+            Hacemos que lo complejo se sienta natural, devolviéndote valioso tiempo libre para enfocarte en lo que de verdad importa: el bienestar de tus pacientes.
           </p>
         </div>
 
