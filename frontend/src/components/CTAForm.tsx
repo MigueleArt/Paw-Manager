@@ -4,11 +4,11 @@ import { Heart, Send, CheckCircle, Shield, AlertTriangle, Sparkles, PawPrint, He
 
 interface WaitlistEntry {
   id: string;
-  shelterName: string;
+  clinicName: string;
   userName: string;
   email: string;
   whatsapp?: string;
-  petCount: string;
+  patientVolume: string;
   timestamp: string;
 }
 
@@ -18,11 +18,11 @@ interface CTAFormProps {
 
 export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
   // Input fields state
-  const [shelterName, setShelterName] = useState("");
+  const [clinicName, setClinicName] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [petCount, setPetCount] = useState("");
+  const [patientVolume, setPatientVolume] = useState("");
 
   // validation states
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -35,14 +35,14 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
 
     // reset errors
     const currentErrors: { [key: string]: string } = {};
-    if (!shelterName.trim()) currentErrors.shelterName = "El nombre de la organización es obligatorio";
+    if (!clinicName.trim()) currentErrors.clinicName = "El nombre de la clínica es obligatorio";
     if (!userName.trim()) currentErrors.userName = "Tu nombre es obligatorio";
     if (!email.trim()) {
       currentErrors.email = "El correo electrónico es obligatorio";
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
       currentErrors.email = "Correo electrónico no válido";
     }
-    if (!petCount) currentErrors.petCount = "Por favor selecciona el rango de mascotas";
+    if (!patientVolume) currentErrors.patientVolume = "Por favor selecciona el volumen de pacientes";
 
     if (Object.keys(currentErrors).length > 0) {
       setErrors(currentErrors);
@@ -54,13 +54,13 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
 
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdvAI5MQoQJJ3fGujbCsj2ylpiJegP0WzDZ7A52m-4U4EG1nA/formResponse";
     const formData = new FormData();
-    formData.append("entry.1732942400", shelterName);
+    formData.append("entry.1732942400", clinicName);
     formData.append("entry.483762169", userName);
     formData.append("entry.758779826", email);
     if (whatsapp) {
       formData.append("entry.342753457", whatsapp);
     }
-    formData.append("entry.1079769614", petCount);
+    formData.append("entry.1079769614", patientVolume);
 
     fetch(FORM_URL, {
       method: "POST",
@@ -70,11 +70,11 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
       .then(() => {
         const newEntry: WaitlistEntry = {
           id: "WLT-" + Math.floor(Math.random() * 9000 + 1000),
-          shelterName,
+          clinicName,
           userName,
           email,
           whatsapp: whatsapp || undefined,
-          petCount,
+          patientVolume,
           timestamp: new Date().toISOString()
         };
 
@@ -95,11 +95,11 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
         setIsSuccess(true);
 
         // reset inputs
-        setShelterName("");
+        setClinicName("");
         setUserName("");
         setEmail("");
         setWhatsapp("");
-        setPetCount("");
+        setPatientVolume("");
       })
       .catch((error) => {
         console.error("Error al enviar el formulario a Google Forms", error);
@@ -129,10 +129,10 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                 <Heart className="h-6 w-6 fill-[#E9C46A] text-[#E9C46A]" />
               </div>
               <h3 className="font-serif font-black text-2xl sm:text-3xl leading-tight">
-                Hagamos equipo por ellos 🐾
+                Optimiza tu Clínica Veterinaria 🩺
               </h3>
               <p className="text-sm text-emerald-100 font-sans leading-relaxed">
-                Estamos abriendo accesos semanales ordenados para asegurar la mejor asesoría técnica directa a cada refugio.
+                Estamos abriendo accesos semanales ordenados para asegurar la mejor asesoría técnica directa a cada clínica.
               </p>
 
 
@@ -163,23 +163,23 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                   initial={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  {/* Shelter Name input */}
+                  {/* Clinic Name input */}
                   <div className="space-y-1">
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-widest font-mono">
-                      Nombre del Refugio / Organización *
+                      Nombre de la Clínica Veterinaria *
                     </label>
                     <input
                       type="text"
-                      value={shelterName}
-                      onChange={(e) => setShelterName(e.target.value)}
-                      placeholder="Ej. Albergue La Esperanza MTY"
-                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.shelterName ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
+                      value={clinicName}
+                      onChange={(e) => setClinicName(e.target.value)}
+                      placeholder="Ej. Veterinaria San Francisco"
+                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.clinicName ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
                         } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800`}
                     />
-                    {errors.shelterName && (
+                    {errors.clinicName && (
                       <p className="text-xs text-red-600 flex items-center space-x-1 font-sans">
                         <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-                        <span>{errors.shelterName}</span>
+                        <span>{errors.clinicName}</span>
                       </p>
                     )}
                   </div>
@@ -244,27 +244,27 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                     />
                   </div>
 
-                  {/* Pet volume select */}
+                  {/* Patient volume select */}
                   <div className="space-y-1">
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-widest font-mono">
-                      ¿Cuántas mascotas administras? *
+                      ¿Cuántos pacientes atiendes al mes? *
                     </label>
                     <select
-                      value={petCount}
-                      onChange={(e) => setPetCount(e.target.value)}
-                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.petCount ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
+                      value={patientVolume}
+                      onChange={(e) => setPatientVolume(e.target.value)}
+                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.patientVolume ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
                         } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800 cursor-pointer`}
                     >
                       <option value="">Selecciona una opción</option>
-                      <option value="1-10">1 a 10 mascotas</option>
-                      <option value="10-50">10 a 50 mascotas</option>
-                      <option value="50-100">50 a 100 mascotas</option>
-                      <option value="+100">Más de 100 mascotas</option>
+                      <option value="1-50">1 a 50 pacientes</option>
+                      <option value="50-200">50 a 200 pacientes</option>
+                      <option value="200-500">200 a 500 pacientes</option>
+                      <option value="+500">Más de 500 pacientes</option>
                     </select>
-                    {errors.petCount && (
+                    {errors.patientVolume && (
                       <p className="text-xs text-red-600 flex items-center space-x-1">
                         <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-                        <span>{errors.petCount}</span>
+                        <span>{errors.patientVolume}</span>
                       </p>
                     )}
                   </div>
@@ -306,7 +306,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                     🐾 ¡Listo! Te contactaremos pronto.
                   </h5>
                   <p className="text-sm text-gray-700 font-sans max-w-md mx-auto leading-relaxed">
-                    Hemos agendado tu pre-registro con éxito. Tu organización ha sido añadida a la lista de espera activa y te enviaremos tu liga de acceso al correo registrado.
+                    Hemos agendado tu pre-registro con éxito. Tu clínica ha sido añadida a la lista de espera activa y te enviaremos tu liga de acceso al correo registrado.
                   </p>
 
                   <div className="bg-white p-4 rounded-2xl border border-emerald-100 shadow-xs max-w-sm mx-auto text-xs text-left space-y-2">
@@ -314,7 +314,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                       <span>✓ Expediente Pre-Aprobado</span>
                     </p>
                     <p className="text-gray-500 font-sans">
-                      Aceleramos la entrega de tu plan Beta. Recibirás un mensaje de WhatsApp técnico para confirmar tu importación de Excel.
+                      Aceleramos la entrega de tu plan Beta. Recibirás un mensaje de WhatsApp técnico para confirmar tu importación de historiales clínicos.
                     </p>
                   </div>
 
@@ -322,7 +322,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                     onClick={() => setIsSuccess(false)}
                     className="text-xs font-bold text-[#F4845F] hover:underline"
                   >
-                    Registrar otra organización o corregir datos
+                    Registrar otra clínica o corregir datos
                   </button>
                 </motion.div>
               )}

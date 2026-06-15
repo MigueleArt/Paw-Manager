@@ -5,6 +5,7 @@ import Problems from "./components/Problems";
 import Solution from "./components/Solution";
 import Benefits from "./components/Benefits";
 import PetGallery from "./components/PetGallery";
+import AppointmentModule from "./components/AppointmentModule";
 
 import CTAForm from "./components/CTAForm";
 import Footer from "./components/Footer";
@@ -13,18 +14,18 @@ import { CheckCircle, X, Sparkles, PawPrint } from "lucide-react";
 
 interface WaitlistEntry {
   id: string;
-  shelterName: string;
+  clinicName: string;
   userName: string;
   email: string;
   whatsapp?: string;
-  petCount: string;
+  patientVolume: string;
   timestamp: string;
 }
 
 export default function App() {
   const [waitlist, setWaitlist] = useState<WaitlistEntry[]>([]);
   const [showToast, setShowToast] = useState(false);
-  const [registeredShelterName, setRegisteredShelterName] = useState("");
+  const [registeredClinicName, setRegisteredClinicName] = useState("");
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function App() {
   // Handler for successful waitlist registrations
   const handleRegisterSuccess = (entry: WaitlistEntry) => {
     setWaitlist((prev) => [entry, ...prev]);
-    setRegisteredShelterName(entry.shelterName);
+    setRegisteredClinicName(entry.clinicName);
     setShowToast(true);
 
     // Auto-dismiss toast
@@ -72,7 +73,8 @@ export default function App() {
         {/* EMOTIONAL GALLERY */}
         <PetGallery />
 
-
+        {/* APPOINTMENT MANAGEMENT MOCKUP */}
+        <AppointmentModule />
 
         {/* REGISTRATION FORM (THE MAIN CTA CONVERSION DRIVER) */}
         <CTAForm onRegisterSuccess={handleRegisterSuccess} />
@@ -105,10 +107,10 @@ export default function App() {
                 </button>
               </div>
               <h5 className="font-bold text-sm leading-snug font-sans">
-                ¡Gracias por sumarte, {registeredShelterName}!
+                ¡Gracias por sumarte, {registeredClinicName}!
               </h5>
               <p className="text-xs text-gray-300 font-sans leading-relaxed">
-                🐾 Hemos guardado tu información. Recibirás respuesta técnica para importar tus mascotas pronto.
+                🐾 Hemos guardado tu información. Recibirás respuesta técnica para importar tus historiales clínicos pronto.
               </p>
             </div>
           </motion.div>

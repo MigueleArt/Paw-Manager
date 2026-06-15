@@ -75,10 +75,10 @@ export default function Navbar() {
               Adopciones
             </button>
             <button
-              onClick={() => scrollToSection("testimonios")}
+              onClick={() => scrollToSection("modulo-citas")}
               className="text-gray-700 hover:text-[#2D6A4F] font-medium transition-colors text-sm"
             >
-              Testimonios
+              Citas
             </button>
           </div>
 
@@ -146,10 +146,10 @@ export default function Navbar() {
               Adopciones
             </button>
             <button
-              onClick={() => scrollToSection("testimonios")}
+              onClick={() => scrollToSection("modulo-citas")}
               className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-[#F4845F]/10 hover:text-[#2D6A4F] rounded-lg transition-colors"
             >
-              Testimonios
+              Citas
             </button>
             <button
               onClick={() => scrollToSection("registro")}
