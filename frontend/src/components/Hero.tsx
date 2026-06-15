@@ -43,7 +43,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-[#1B4332] leading-[1.12]"
             >
-              Tu refugio merece una herramienta tan buena como tu <span className="text-[#F4845F] relative">trabajo<span className="absolute left-0 bottom-1 w-full h-[6px] bg-[#E9C46A]/50 rounded-full -z-10" /></span>
+              Tu veterinaria merece una gestión tan eficiente como tu atención médica <span className="text-[#F4845F] relative">trabajo<span className="absolute left-0 bottom-1 w-full h-[6px] bg-[#E9C46A]/50 rounded-full -z-10" /></span>
             </motion.h1>
 
             {/* Subheadline */}
@@ -53,8 +53,8 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-gray-700 font-sans max-w-2xl leading-relaxed"
             >
-              Deja de perder mascotas entre hojas de Excel y mensajes de WhatsApp. 
-              Organiza fichas médicas, solicitudes de adopción, vacunas y voluntarios en un solo lugar.
+              Deja de gestionar citas y expedientes entre hojas de Excel y mensajes de WhatsApp.
+              Administra pacientes, historiales médicos, vacunación y citas veterinarias desde una sola plataforma.
             </motion.p>
 
             {/* Trust checkmarks */}
@@ -74,7 +74,7 @@ export default function Hero() {
               </div>
               <div className="flex items-center space-x-2 bg-white/60 p-2.5 rounded-xl border border-[#2D6A4F]/10">
                 <CheckCircle className="h-4 w-4 text-[#2D6A4F] shrink-0" />
-                <span>Hecho para refugios</span>
+                <span>Hecho para veterinarias</span>
               </div>
             </motion.div>
 
