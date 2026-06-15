@@ -33,7 +33,7 @@ export default function Hero() {
               className="inline-flex items-center space-x-2 bg-[#2D6A4F]/10 text-[#2D6A4F] px-4 py-1.5 rounded-full text-xs font-semibold self-start shadow-sm"
             >
               <Sparkles className="h-3.5 w-3.5 text-[#E9C46A] fill-[#E9C46A]" />
-              <span>SaaS para Héroes de Cuatro Patas 🐕🐈</span>
+              <span>SaaS para Veterinarias Modernas 🩺🐾</span>
             </motion.div>
 
             {/* Headline */}
@@ -43,7 +43,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-[#1B4332] leading-[1.12]"
             >
-              Tu refugio merece una herramienta tan buena como tu <span className="text-[#F4845F] relative">trabajo<span className="absolute left-0 bottom-1 w-full h-[6px] bg-[#E9C46A]/50 rounded-full -z-10" /></span>
+              Tu veterinaria merece una herramienta tan buena como tu <span className="text-[#F4845F] relative">trabajo<span className="absolute left-0 bottom-1 w-full h-[6px] bg-[#E9C46A]/50 rounded-full -z-10" /></span>
             </motion.h1>
 
             {/* Subheadline */}
