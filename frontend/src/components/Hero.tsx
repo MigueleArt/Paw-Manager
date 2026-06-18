@@ -33,7 +33,7 @@ export default function Hero() {
               className="inline-flex items-center space-x-2 bg-[#2D6A4F]/10 text-[#2D6A4F] px-4 py-1.5 rounded-full text-xs font-semibold self-start shadow-sm"
             >
               <Sparkles className="h-3.5 w-3.5 text-[#E9C46A] fill-[#E9C46A]" />
-              <span>SaaS para Héroes de Cuatro Patas 🐕🐈</span>
+              <span>SaaS para Veterinarias Modernas 🩺🐾</span>
             </motion.div>
 
             {/* Headline */}
@@ -43,7 +43,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-black font-serif text-[#1B4332] leading-[1.12]"
             >
-              Tu refugio merece una herramienta tan buena como tu <span className="text-[#F4845F] relative">trabajo<span className="absolute left-0 bottom-1 w-full h-[6px] bg-[#E9C46A]/50 rounded-full -z-10" /></span>
+              Tu veterinaria merece una herramienta tan buena como tu <span className="text-[#F4845F] relative">trabajo<span className="absolute left-0 bottom-1 w-full h-[6px] bg-[#E9C46A]/50 rounded-full -z-10" /></span>
             </motion.h1>
 
             {/* Subheadline */}
@@ -53,8 +53,8 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-gray-700 font-sans max-w-2xl leading-relaxed"
             >
-              Deja de perder mascotas entre hojas de Excel y mensajes de WhatsApp. 
-              Organiza fichas médicas, solicitudes de adopción, vacunas y voluntarios en un solo lugar.
+              Deja de perder citas entre hojas de Excel y mensajes de WhatsApp. 
+              Organiza agenda de consultas médicas y estética, historial clínico y recordatorios de tus pacientes en un solo lugar.
             </motion.p>
 
             {/* Trust checkmarks */}
@@ -74,7 +74,7 @@ export default function Hero() {
               </div>
               <div className="flex items-center space-x-2 bg-white/60 p-2.5 rounded-xl border border-[#2D6A4F]/10">
                 <CheckCircle className="h-4 w-4 text-[#2D6A4F] shrink-0" />
-                <span>Hecho para refugios</span>
+                <span>Hecho para veterinarias</span>
               </div>
             </motion.div>
 
@@ -123,8 +123,8 @@ export default function Hero() {
             {/* Framed Hero Image */}
             <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white aspect-[4/5] sm:aspect-square lg:aspect-[4/5] object-cover group">
               <img
-                src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&q=80"
-                alt="Adorables mascotas esperando por un hogar"
+                src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=1200&q=80"
+                alt="Veterinaria revisando a una mascota en consulta"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
@@ -136,7 +136,7 @@ export default function Hero() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-mono text-gray-500">ESTADO DE HOY</p>
-                  <p className="text-sm font-semibold text-gray-800">¡3 Adopciones Hoy!</p>
+                  <p className="text-sm font-semibold text-gray-800">¡8 Citas Agendadas Hoy!</p>
                 </div>
               </div>
 
@@ -144,14 +144,14 @@ export default function Hero() {
                 <div className="flex items-center justify-between pb-2 border-b border-white/10">
                   <div className="flex items-center space-x-2">
                     <Activity className="h-4 w-4 text-[#E9C46A]" />
-                    <span className="text-xs font-mono text-gray-300 font-bold tracking-wider">EXPEDIENTE CENTRAL</span>
+                    <span className="text-xs font-mono text-gray-300 font-bold tracking-wider">AGENDA CENTRAL</span>
                   </div>
-                  <span className="bg-[#F4845F] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Listo para Adopción</span>
+                  <span className="bg-[#F4845F] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Próxima Cita: 10:30 AM</span>
                 </div>
                 <div className="flex items-center justify-between pt-2">
                   <div>
                     <h4 className="text-white font-serif font-bold text-lg">"Toby"</h4>
-                    <p className="text-xs text-gray-300">Golden Retriever • 1.5 años • Vacunado</p>
+                    <p className="text-xs text-gray-300">Golden Retriever • 1.5 años • Consulta General</p>
                   </div>
                   <span className="text-2xl">🐕</span>
                 </div>
@@ -196,7 +196,7 @@ export default function Hero() {
                   </div>
                   <div>
                     <h3 className="font-serif font-bold text-lg">Simulador de Ficha PawManager</h3>
-                    <p className="text-xs text-emerald-100 font-sans">Mira cómo se vería tu panel en segundos</p>
+                    <p className="text-xs text-emerald-100 font-sans">Mira cómo se vería tu agenda y expedientes en segundos</p>
                   </div>
                 </div>
                 <button
@@ -212,7 +212,7 @@ export default function Hero() {
                 
                 {/* Left controls */}
                 <div className="md:col-span-4 flex flex-col space-y-3">
-                  <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">Elige una Mascota</p>
+                  <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">Elige un Paciente</p>
                   
                   <button
                     onClick={() => setActiveDemoTab("dogs")}
@@ -225,7 +225,7 @@ export default function Hero() {
                     <span className="text-xl">🐕</span>
                     <div>
                       <h4 className="font-semibold text-sm text-gray-800">Toby (Perro)</h4>
-                      <p className="text-xs text-gray-500">Pendiente de desparasitación</p>
+                      <p className="text-xs text-gray-500">Cita de control - Hoy 10:30 AM</p>
                     </div>
                   </button>
 
@@ -240,7 +240,7 @@ export default function Hero() {
                     <span className="text-xl">🐈</span>
                     <div>
                       <h4 className="font-semibold text-sm text-gray-800">Luna (Gato)</h4>
-                      <p className="text-xs text-gray-500">Vacunación Completa</p>
+                      <p className="text-xs text-gray-500">Sesión de estética - Mañana</p>
                     </div>
                   </button>
 
@@ -255,13 +255,13 @@ export default function Hero() {
                     <span className="text-xl">🐇</span>
                     <div>
                       <h4 className="font-semibold text-sm text-gray-800">Copito (Conejo)</h4>
-                      <p className="text-xs text-gray-500">Rescatado ayer por voluntario</p>
+                      <p className="text-xs text-gray-500">Consulta de urgencia - Ayer</p>
                     </div>
                   </button>
 
                   <div className="bg-[#E9C46A]/20 p-4 rounded-2xl border border-[#E9C46A]/30 mt-4">
                     <p className="text-xs text-[#805B10] font-semibold leading-relaxed">
-                      💡 En el sistema completo, un voluntario puede escanear un QR en la jaula para actualizar estas fichas médicas al instante.
+                      💡 En el sistema completo, tu equipo puede confirmar citas y actualizar el historial médico desde el celular en tiempo real.
                     </p>
                   </div>
                 </div>
@@ -284,7 +284,7 @@ export default function Hero() {
                           </div>
                         </div>
                         <span className="bg-[#F4845F]/20 text-[#F4845F] text-xs font-bold px-3 py-1 rounded-full border border-[#F4845F]/30">
-                          Urgente • Falta Vacuna Sextuple
+                          Hoy • Consulta General 10:30 AM
                         </span>
                       </div>
 
@@ -294,16 +294,16 @@ export default function Hero() {
                           <span className="font-semibold text-gray-800">1 año, 6 meses</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Ingreso</span>
-                          <span className="font-semibold text-gray-800">14 Abril 2026</span>
+                          <span className="text-gray-500 block">Dueño</span>
+                          <span className="font-semibold text-gray-800">Mariana López</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Ubicación</span>
-                          <span className="font-semibold text-gray-800">Jaula 4B (Temporal Poniente)</span>
+                          <span className="text-gray-500 block">Motivo de Cita</span>
+                          <span className="font-semibold text-gray-800">Chequeo de rutina</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Adoptantes Interesados</span>
-                          <span className="font-semibold text-[#2D6A4F]">4 Solicitudes activas</span>
+                          <span className="text-gray-500 block">Citas Futuras</span>
+                          <span className="font-semibold text-[#2D6A4F]">1 Programada (Vacuna)</span>
                         </div>
                       </div>
 
@@ -316,7 +316,7 @@ export default function Hero() {
                           </li>
                           <li className="flex items-center space-x-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                            <span>Desparasitación Triple - <strong>Pendiente</strong> (Próx Jueves)</span>
+                            <span>Vacuna Sextuple - <strong>Programada</strong> (Próx Jueves)</span>
                           </li>
                         </ul>
                       </div>
@@ -338,7 +338,7 @@ export default function Hero() {
                           </div>
                         </div>
                         <span className="bg-[#2D6A4F]/20 text-[#2D6A4F] text-xs font-bold px-3 py-1 rounded-full border border-[#2D6A4F]/30">
-                          Expediente Completo
+                          Mañana • Baño y Corte 09:00 AM
                         </span>
                       </div>
 
@@ -348,12 +348,12 @@ export default function Hero() {
                           <span className="font-semibold text-gray-800">8 meses</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Ingreso</span>
-                          <span className="font-semibold text-gray-800">01 Mayo 2026</span>
+                          <span className="text-gray-500 block">Dueño</span>
+                          <span className="font-semibold text-gray-800">Carlos Ruiz</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Esterilización</span>
-                          <span className="font-semibold text-[#2D6A4F]">Realizada ✓</span>
+                          <span className="text-gray-500 block">Servicio</span>
+                          <span className="font-semibold text-gray-800">Baño + Corte de uñas</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
                           <span className="text-gray-500 block">Temperamento</span>
@@ -385,7 +385,7 @@ export default function Hero() {
                           </div>
                         </div>
                         <span className="bg-amber-100 text-[#805B10] text-xs font-bold px-3 py-1 rounded-full border border-amber-200">
-                          Recién Rescatado
+                          Ayer • Consulta de Urgencia
                         </span>
                       </div>
 
@@ -395,15 +395,15 @@ export default function Hero() {
                           <span className="font-semibold text-gray-800">Desconocida (~1 año)</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Ingreso</span>
-                          <span className="font-semibold text-gray-800">Ayer, 04:12 Z</span>
-                        </div>
-                        <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Rescatista</span>
+                          <span className="text-gray-500 block">Dueño</span>
                           <span className="font-semibold text-gray-800">Lucía Mendoza</span>
                         </div>
                         <div className="bg-[#FDF8F0] p-3 rounded-xl">
-                          <span className="text-gray-500 block">Situación</span>
+                          <span className="text-gray-500 block">Motivo</span>
+                          <span className="font-semibold text-gray-800">Pérdida de apetito</span>
+                        </div>
+                        <div className="bg-[#FDF8F0] p-3 rounded-xl">
+                          <span className="text-gray-500 block">Estado</span>
                           <span className="font-semibold text-red-600">En observación médica</span>
                         </div>
                       </div>
@@ -411,9 +411,9 @@ export default function Hero() {
                       <div className="border-t border-gray-100 pt-3">
                         <h5 className="font-semibold text-xs text-gray-500 mb-2 uppercase tracking-wide">Acciones Inmediatas</h5>
                         <div className="flex flex-wrap gap-2">
-                          <span className="bg-red-50 text-red-700 border border-red-100 text-[11px] font-medium px-2 py-1 rounded-lg">Programar Baño Especial</span>
+                          <span className="bg-red-50 text-red-700 border border-red-100 text-[11px] font-medium px-2 py-1 rounded-lg">Agendar Cita de Seguimiento</span>
                           <span className="bg-amber-50 text-amber-800 border border-amber-100 text-[11px] font-medium px-2 py-1 rounded-lg">Examen Coprológico</span>
-                          <span className="bg-gray-50 text-gray-600 border border-gray-100 text-[11px] font-medium px-2 py-1 rounded-lg">Subir Fotos de Ingreso</span>
+                          <span className="bg-gray-50 text-gray-600 border border-gray-100 text-[11px] font-medium px-2 py-1 rounded-lg">Agregar Nota al Historial</span>
                         </div>
                       </div>
                     </motion.div>
