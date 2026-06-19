@@ -7,6 +7,9 @@ import { useAuth } from '../../context/AuthContext';
 export default function AppointmentsManager() {
   const { userData } = useAuth();
   const [appointments, setAppointments] = useState<any[]>([]);
+  const [pendingCount, setPendingCount] = useState(0);
+const [completedCount, setCompletedCount] = useState(0);
+const [currentDate, setCurrentDate] = useState('');
   const [roles, setRoles] = useState<any[]>([]);
   const [pets, setPets] = useState<any[]>([]);
   
@@ -25,6 +28,7 @@ export default function AppointmentsManager() {
   useEffect(() => {
     if (!userData?.clinicId) return;
     const clinicId = userData.clinicId;
+    setCurrentDate(new Date().toLocaleString());
 
     const unsubscribeAppts = onSnapshot(query(collection(db, 'appointments'), where('clinicId', '==', clinicId)), (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
