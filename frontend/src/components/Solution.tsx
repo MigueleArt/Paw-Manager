@@ -10,43 +10,43 @@ export default function Solution() {
 
   const features = [
     {
-      title: "Ficha digital por mascota",
-      description: "Toda la información del peludo unificada en menos de 3 clics: fotos de ingreso, vacunas aplicadas, historial de alergias, carácter e indicaciones nutricionales.",
+      title: "Ficha clínica digital",
+      description: "Toda la información del paciente unificada en menos de 3 clics: radiografías, vacunas aplicadas, historial de alergias, peso histórico e indicaciones nutricionales.",
       icon: <FileText className="h-5 w-5" />,
       color: "bg-emerald-500",
       view: "pets"
     },
     {
-      title: "Tablero visual de adopciones",
-      description: "Gestiona las solicitudes mediante un embudo Kanban interactivo. Ve quién está en entrevista, quién espera visita domiciliaria y quién está listo para ir a casa.",
+      title: "Tablero de Hospitalización",
+      description: "Gestiona los pacientes internados mediante un tablero visual interactivo. Ve quién está en recuperación, quién requiere medicamentos y quién está listo para alta.",
       icon: <KanbanSquare className="h-5 w-5" />,
       color: "bg-orange-500",
       view: "adoption-board"
     },
     {
-      title: "Recordatorios automáticos",
-      description: "Olvídate de agendar a mano. El sistema alerta por WhatsApp o correo a los voluntarios de turno y a los veterinarios sobre vacunas y desparasitaciones.",
+      title: "Recordatorios de Vacunas",
+      description: "Olvídate de agendar a mano. El sistema alerta por WhatsApp o correo a los dueños sobre sus próximas citas de vacunación y desparasitación.",
       icon: <BellRing className="h-5 w-5" />,
       color: "bg-amber-500",
       view: "reminders"
     },
     {
-      title: "Comunicación centralizada",
-      description: "Plantillas automáticas para dar seguimiento post-adopción a las familias. Envía encuestas mensuales de adaptación en formato digital y guarda fotos de reporte.",
+      title: "Comunicación con el Cliente",
+      description: "Plantillas automáticas para dar seguimiento post-consulta. Envía recordatorios de medicación y recibe reportes del estado de la mascota desde casa.",
       icon: <MessageSquareHeart className="h-5 w-5" />,
       color: "bg-rose-500",
       view: "comms"
     },
     {
-      title: "Reportes y estadísticas",
-      description: "Muestra a tus donadores y patrocinadores el impacto real de sus aportaciones con gráficas de cuántos animales han sido rescatados y adoptados.",
+      title: "Estadísticas y Finanzas",
+      description: "Analiza la rentabilidad de tu clínica con reportes en tiempo real sobre los servicios más solicitados, inventario y flujo de caja.",
       icon: <BarChart3 className="h-5 w-5" />,
       color: "bg-blue-500",
       view: "reports"
     },
     {
-      title: "Acceso para voluntarios",
-      description: "Define permisos específicos. Tus auxiliares pueden subir fotos, tus médicos registrar vacunas y tus coordinadores aprobar los contratos de adopción.",
+      title: "Control de Personal",
+      description: "Define permisos específicos. Tus recepcionistas pueden agendar citas, tus médicos actualizar diagnósticos y los gerentes acceder a la contabilidad.",
       icon: <Users className="h-5 w-5" />,
       color: "bg-teal-500",
       view: "volunteers"
@@ -66,11 +66,11 @@ export default function Solution() {
             La Plataforma Definitiva
           </span>
           <h2 className="text-3xl sm:text-4xl font-serif font-black text-[#1B4332] leading-tight">
-            Una sola plataforma para gestionar todo tu refugio
+            Una sola plataforma para gestionar toda tu Clínica
           </h2>
           <p className="text-gray-600 font-sans max-w-2xl mx-auto">
-            Creado de la mano con rescatistas de México y Latinoamérica para resolver los desafíos 
-            operativos reales del día a día.
+            Creado de la mano con veterinarios para resolver los desafíos 
+            operativos reales del día a día en la consulta.
           </p>
         </div>
 
@@ -145,11 +145,11 @@ export default function Solution() {
                   {/* Top Header Row */}
                   <div className="flex items-center justify-between pb-4 border-b border-gray-100">
                     <div>
-                      <h4 className="text-xs font-mono text-gray-400 uppercase tracking-widest">Panel de Control: Refugio San Roque</h4>
+                      <h4 className="text-xs font-mono text-gray-400 uppercase tracking-widest">Panel de Control: Clínica San Roque</h4>
                       <h3 className="font-serif font-black text-[#1B4332] text-xl">Administración Activa</h3>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="bg-[#2D6A4F] text-[#FDF8F0] p-1.5 rounded-lg text-xs font-bold leading-none">🐾 RSR</span>
+                      <span className="bg-[#2D6A4F] text-[#FDF8F0] p-1.5 rounded-lg text-xs font-bold leading-none">🐾 CSR</span>
                     </div>
                   </div>
 
@@ -167,8 +167,8 @@ export default function Solution() {
                           className="space-y-4"
                         >
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold font-mono text-[#2D6A4F] bg-[#2D6A4F]/10 px-2 py-1 rounded-lg">FICHA EXPEDIENTE DIGITAL</span>
-                            <span className="text-xs text-gray-500 font-mono">148 mascotas registradas</span>
+                            <span className="text-xs font-bold font-mono text-[#2D6A4F] bg-[#2D6A4F]/10 px-2 py-1 rounded-lg">FICHA CLÍNICA DIGITAL</span>
+                            <span className="text-xs text-gray-500 font-mono">2,148 pacientes registrados</span>
                           </div>
                           
                           <div className="space-y-2">
@@ -178,10 +178,10 @@ export default function Solution() {
                                 <span className="text-2xl">🐕</span>
                                 <div>
                                   <h5 className="font-bold text-[#1B4332] text-sm leading-tight">Roco</h5>
-                                  <p className="text-xs text-gray-500">Mestizo Pitbull • 2 años • Sano</p>
+                                  <p className="text-xs text-gray-500">Mestizo Pitbull • Dueño: Juan P.</p>
                                 </div>
                               </div>
-                              <span className="bg-[#2D6A4F]/20 text-[#2D6A4F] text-[10px] font-bold px-2.5 py-1 rounded-full">✓ Esterilizado</span>
+                              <span className="bg-[#2D6A4F]/20 text-[#2D6A4F] text-[10px] font-bold px-2.5 py-1 rounded-full">Vacunas al día</span>
                             </div>
 
                             {/* Pet item 2 */}
@@ -190,7 +190,7 @@ export default function Solution() {
                                 <span className="text-2xl">🐈</span>
                                 <div>
                                   <h5 className="font-bold text-[#1B4332] text-sm leading-tight">Mimi</h5>
-                                  <p className="text-xs text-gray-500">Gatito Angora • 4 meses • Crítico</p>
+                                  <p className="text-xs text-gray-500">Gatito Angora • Dueño: Karla L.</p>
                                 </div>
                               </div>
                               <span className="bg-[#F4845F]/20 text-[#F4845F] text-[10px] font-bold px-2.5 py-1 rounded-full">⚠ Tratamiento Otitis</span>
@@ -202,10 +202,10 @@ export default function Solution() {
                                 <span className="text-2xl">🐕</span>
                                 <div>
                                   <h5 className="font-bold text-[#1B4332] text-sm leading-tight">Bella</h5>
-                                  <p className="text-xs text-gray-500">Pastor Belga • 1.2 años • Sano</p>
+                                  <p className="text-xs text-gray-500">Pastor Belga • Dueño: Carlos M.</p>
                                 </div>
                               </div>
-                              <span className="bg-[#E9C46A]/30 text-[#805B10] text-[10px] font-bold px-2.5 py-1 rounded-full">Listo Para Casa</span>
+                              <span className="bg-[#E9C46A]/30 text-[#805B10] text-[10px] font-bold px-2.5 py-1 rounded-full">Cita de control hoy</span>
                             </div>
                           </div>
                         </motion.div>
@@ -221,36 +221,36 @@ export default function Solution() {
                           className="space-y-3"
                         >
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold font-mono text-[#F4845F] bg-[#F4845F]/10 px-2 py-1 rounded-lg">KANBAN PIPELINE DE SOLICITUDES</span>
-                            <span className="text-xs text-green-700 font-mono">Tasa de aprobación: 68%</span>
+                            <span className="text-xs font-bold font-mono text-[#F4845F] bg-[#F4845F]/10 px-2 py-1 rounded-lg">PACIENTES HOSPITALIZADOS</span>
+                            <span className="text-xs text-green-700 font-mono">6 en piso actualmente</span>
                           </div>
 
                           <div className="grid grid-cols-3 gap-2">
                             {/* Column 1 */}
                             <div className="bg-[#FFF8F6] p-2.5 rounded-xl border border-[#F4845F]/10 space-y-2">
-                              <h5 className="font-bold text-[10px] text-[#F4845F] uppercase font-mono tracking-wider">Por Evaluar (2)</h5>
+                              <h5 className="font-bold text-[10px] text-[#F4845F] uppercase font-mono tracking-wider">Terapia Intensiva (2)</h5>
                               <div className="bg-white p-2 rounded-lg shadow-sm border border-orange-100 text-[11px]">
-                                <p className="font-bold">Fam. Gómez</p>
-                                <p className="text-gray-500 text-[9px] font-sans">Interés en Toby</p>
+                                <p className="font-bold">Max</p>
+                                <p className="text-gray-500 text-[9px] font-sans">Monitoreo constante</p>
                               </div>
                             </div>
 
                             {/* Column 2 */}
                             <div className="bg-amber-50/50 p-2.5 rounded-xl border border-[#E9C46A]/20 space-y-2">
-                              <h5 className="font-bold text-[10px] text-[#805B10] uppercase font-mono tracking-wider">Entrevista (1)</h5>
+                              <h5 className="font-bold text-[10px] text-[#805B10] uppercase font-mono tracking-wider">Recuperación (1)</h5>
                               <div className="bg-white p-2 rounded-lg shadow-sm border border-amber-100 text-[11px] relative">
-                                <p className="font-bold">Ana Morales</p>
-                                <span className="bg-[#2D6A4F] text-white text-[7px] px-1 rounded absolute top-1 right-1 font-mono">HOY 4PM</span>
-                                <p className="text-gray-500 text-[9px]">Agendado hoy</p>
+                                <p className="font-bold">Pelusa</p>
+                                <span className="bg-[#2D6A4F] text-white text-[7px] px-1 rounded absolute top-1 right-1 font-mono">Meds 4PM</span>
+                                <p className="text-gray-500 text-[9px]">Post-cirugía</p>
                               </div>
                             </div>
 
                             {/* Column 3 */}
                             <div className="bg-emerald-50/50 p-2.5 rounded-xl border border-[#2D6A4F]/20 space-y-2">
-                              <h5 className="font-bold text-[10px] text-[#2D6A4F] uppercase font-mono tracking-wider">Aprobado! (3)</h5>
+                              <h5 className="font-bold text-[10px] text-[#2D6A4F] uppercase font-mono tracking-wider">Alta Médica (3)</h5>
                               <div className="bg-white p-2 rounded-lg shadow-sm border border-emerald-100 text-[11px]">
                                 <p className="font-bold">Héctor Luna</p>
-                                <p className="text-emerald-700 text-[9px] font-semibold">Esperando firma</p>
+                                <p className="text-emerald-700 text-[9px] font-semibold">Esperando al dueño</p>
                               </div>
                             </div>
                           </div>
@@ -268,7 +268,7 @@ export default function Solution() {
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold font-mono text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg">VENCIMIENTOS Y CITAS</span>
-                            <span className="text-xs text-gray-500 font-mono">Mañana: 3 controles</span>
+                            <span className="text-xs text-gray-500 font-mono">Mañana: 12 consultas</span>
                           </div>
 
                           <div className="space-y-2.5">
@@ -276,19 +276,19 @@ export default function Solution() {
                               <div className="flex items-center space-x-3">
                                 <span className="p-1.5 rounded-lg bg-amber-500 text-white">🔔</span>
                                 <div>
-                                  <p className="font-bold font-sans">Vacuna Puppy Triple - Roco</p>
-                                  <p className="text-[10px] text-gray-500">Asignar veterinario: Dra. Elena Ortiz</p>
+                                  <p className="font-bold font-sans">Vacuna Anual - Roco</p>
+                                  <p className="text-[10px] text-gray-500">Dr. Asignado: Elena Ortiz</p>
                                 </div>
                               </div>
-                              <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider">FALTA 1 DÍA</span>
+                              <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider">DUEÑO AVISADO</span>
                             </div>
 
                             <div className="bg-rose-50/60 p-3.5 rounded-xl border border-rose-200/50 flex justify-between items-center text-xs">
                               <div className="flex items-center space-x-3">
                                 <span className="p-1.5 rounded-lg bg-rose-500 text-white">💉</span>
                                 <div>
-                                  <p className="font-bold">Control Desparasitante - 12 Cachorros</p>
-                                  <p className="text-[10px] text-gray-500">Grupo Jaula de Maternidad Norte</p>
+                                  <p className="font-bold">Control Desparasitante - 4 Mascotas</p>
+                                  <p className="text-[10px] text-gray-500">Notificación semanal programada</p>
                                 </div>
                               </div>
                               <span className="text-[10px] bg-[#2D6A4F]/10 text-[#2D6A4F] px-2 py-0.5 rounded font-mono">AUTO-WHATSAPP ENVIADO ✓</span>
@@ -306,15 +306,15 @@ export default function Solution() {
                           exit={{ opacity: 0, scale: 0.98 }}
                           className="space-y-3"
                         >
-                          <span className="text-xs font-bold font-mono text-rose-700 bg-rose-50 px-2 py-1 rounded-lg">SEGUIMIENTO AUTOMÁTICO POST-ADOPCIÓN</span>
+                          <span className="text-xs font-bold font-mono text-rose-700 bg-rose-50 px-2 py-1 rounded-lg">SEGUIMIENTO CLÍNICO POR WHATSAPP</span>
                           
                           <div className="border border-green-100 rounded-xl p-3 bg-green-50/20 text-xs text-left text-gray-700 font-sans leading-relaxed">
                             <div className="flex items-center justify-between pb-2 mb-2 border-b border-green-100">
-                              <span className="font-bold text-[#2D6A4F]">Plantilla WhatsApp Automatizada</span>
-                              <span className="text-xs text-gray-400 font-mono">Mes 1 post-adopción</span>
+                              <span className="font-bold text-[#2D6A4F]">Plantilla Post-Operatoria</span>
+                              <span className="text-xs text-gray-400 font-mono">A las 24 hrs de cirugía</span>
                             </div>
                             <p>
-                              "Hola <strong>Fam. Salazar</strong> 🐾, ¿cómo ha estado <strong>Milo</strong> en su primer mes en casa? Nos encantaría recibir una fotito suya y saber si todo va genial. Dudas con su comida, recuerda responder este mensaje."
+                              "Hola <strong>Fam. Salazar</strong> 🐾, somos de la Clínica San Roque. Queremos saber cómo ha pasado la noche <strong>Milo</strong> después de su cirugía. ¿Ha comido bien? Por favor responde con un 'Todo bien' o mándanos una foto si tienes dudas."
                             </p>
                             <div className="flex items-center justify-between mt-2 pt-2 border-t border-green-50">
                               <span className="text-xs text-gray-400 font-mono">Tasa de respuesta: 94%</span>
@@ -334,32 +334,32 @@ export default function Solution() {
                           className="space-y-4"
                         >
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold font-mono text-blue-700 bg-blue-50 px-2 py-1 rounded-lg">REPORTES ANUALES REFUGIO</span>
-                            <span className="text-xs text-brand-600 font-mono">Enero - Mayo 2026</span>
+                            <span className="text-xs font-bold font-mono text-blue-700 bg-blue-50 px-2 py-1 rounded-lg">REPORTE FINANCIERO MENSUAL</span>
+                            <span className="text-xs text-brand-600 font-mono">Junio 2026</span>
                           </div>
 
                           <div className="grid grid-cols-2 gap-4">
                             <div className="bg-[#FDF8F0] p-3 rounded-2xl border border-[#2D6A4F]/10">
-                              <span className="text-xs text-gray-500 font-sans block">Total Adoptados 🐕</span>
-                              <span className="text-2xl font-bold text-[#1B4332] font-serif">148</span>
-                              <span className="text-[10px] text-[#2D6A4F] block font-mono">▲ 24% vs año pasado</span>
+                              <span className="text-xs text-gray-500 font-sans block">Consultas Realizadas 🩺</span>
+                              <span className="text-2xl font-bold text-[#1B4332] font-serif">412</span>
+                              <span className="text-[10px] text-[#2D6A4F] block font-mono">▲ 14% vs mes pasado</span>
                             </div>
                             <div className="bg-[#FDF8F0] p-3 rounded-2xl border border-[#2D6A4F]/10">
-                              <span className="text-xs text-gray-500 font-sans block">Esterilizados exitosos</span>
-                              <span className="text-2xl font-bold text-[#1B4332] font-serif">98%</span>
-                              <span className="text-[10px] text-[#2D6A4F] block font-mono">Procedimiento impecable</span>
+                              <span className="text-xs text-gray-500 font-sans block">Ventas en Farmacia</span>
+                              <span className="text-2xl font-bold text-[#1B4332] font-serif">$85k</span>
+                              <span className="text-[10px] text-[#2D6A4F] block font-mono">Rotación saludable</span>
                             </div>
                           </div>
 
                           <div className="h-16 bg-blue-50/10 border border-blue-100 rounded-xl flex items-center justify-around text-xs p-2">
                             <div className="text-center">
-                              <span className="text-[9px] text-gray-500 block uppercase font-mono">Alimento Donado</span>
-                              <strong className="text-blue-800">1,240 kg</strong>
+                              <span className="text-[9px] text-gray-500 block uppercase font-mono">Ticket Promedio</span>
+                              <strong className="text-blue-800">$850 MXN</strong>
                             </div>
                             <div className="w-[1px] h-8 bg-blue-100" />
                             <div className="text-center">
-                              <span className="text-[9px] text-gray-500 block uppercase font-mono">Gasto Prom. Mascota</span>
-                              <strong className="text-emerald-800">$450 MXN/mes</strong>
+                              <span className="text-[9px] text-gray-500 block uppercase font-mono">Nuevos Clientes</span>
+                              <strong className="text-emerald-800">+45 este mes</strong>
                             </div>
                           </div>
                         </motion.div>
@@ -375,8 +375,8 @@ export default function Solution() {
                           className="space-y-4"
                         >
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold font-mono text-teal-700 bg-teal-50 px-2 py-1 rounded-lg">VOLUNTARIOS & ROLES</span>
-                            <span className="text-xs text-gray-500 font-mono">18 colaboradores activos</span>
+                            <span className="text-xs font-bold font-mono text-teal-700 bg-teal-50 px-2 py-1 rounded-lg">PERSONAL & ROLES</span>
+                            <span className="text-xs text-gray-500 font-mono">8 colaboradores activos</span>
                           </div>
 
                           <div className="space-y-3">
@@ -385,10 +385,10 @@ export default function Solution() {
                                 <span className="w-8 h-8 rounded-full bg-[#E9C46A] flex items-center justify-center font-bold font-mono text-[#1B4332]">SO</span>
                                 <div>
                                   <p className="font-bold">Sofia Orozco</p>
-                                  <p className="text-[10px] text-gray-500">Coordinadora de Adopciones</p>
+                                  <p className="text-[10px] text-gray-500">Recepcionista Principal</p>
                                 </div>
                               </div>
-                              <span className="bg-[#2D6A4F]/10 text-[#2D6A4F] text-[90%] font-semibold px-2 py-0.5 rounded">Aprobador</span>
+                              <span className="bg-[#2D6A4F]/10 text-[#2D6A4F] text-[90%] font-semibold px-2 py-0.5 rounded">Caja y Agenda</span>
                             </div>
 
                             <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl text-xs">
@@ -396,10 +396,10 @@ export default function Solution() {
                                 <span className="w-8 h-8 rounded-full bg-[#F4845F] flex items-center justify-center font-bold font-mono text-white">DM</span>
                                 <div>
                                   <p className="font-bold">Dr. Mateo Pérez</p>
-                                  <p className="text-[10px] text-gray-500">Veterinario Principal Registered</p>
+                                  <p className="text-[10px] text-gray-500">Veterinario Especialista</p>
                                 </div>
                               </div>
-                              <span className="bg-amber-100 text-amber-800 text-[90%] font-semibold px-2 py-0.5 rounded">Veterinario</span>
+                              <span className="bg-amber-100 text-amber-800 text-[90%] font-semibold px-2 py-0.5 rounded">Médico</span>
                             </div>
                           </div>
                         </motion.div>

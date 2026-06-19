@@ -30,7 +30,7 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
   const [isSuccess, setIsSuccess] = useState(false);
 
   // Form handle
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // reset errors
@@ -52,60 +52,45 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
     setErrors({});
     setIsSubmitting(true);
 
-    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdvAI5MQoQJJ3fGujbCsj2ylpiJegP0WzDZ7A52m-4U4EG1nA/formResponse";
-    const formData = new FormData();
-    formData.append("entry.1732942400", shelterName);
-    formData.append("entry.483762169", userName);
-    formData.append("entry.758779826", email);
-    if (whatsapp) {
-      formData.append("entry.342753457", whatsapp);
-    }
-    formData.append("entry.1079769614", petCount);
+    try {
+      const { collection, addDoc } = await import('firebase/firestore');
+      const { db } = await import('../lib/firebase');
 
-    fetch(FORM_URL, {
-      method: "POST",
-      body: formData,
-      mode: "no-cors",
-    })
-      .then(() => {
-        const newEntry: WaitlistEntry = {
-          id: "WLT-" + Math.floor(Math.random() * 9000 + 1000),
-          shelterName,
-          userName,
-          email,
-          whatsapp: whatsapp || undefined,
-          petCount,
-          timestamp: new Date().toISOString()
-        };
-
-        // 1. Store in localStorage fallback
-        try {
-          const stored = localStorage.getItem("pawmanager_beta_waitlist");
-          const list = stored ? JSON.parse(stored) : [];
-          list.push(newEntry);
-          localStorage.setItem("pawmanager_beta_waitlist", JSON.stringify(list));
-        } catch (err) {
-          console.error("No se pudo guardar en localStorage", err);
-        }
-
-        // 2. Bubble up to App.tsx reactive state
-        onRegisterSuccess(newEntry);
-
-        setIsSubmitting(false);
-        setIsSuccess(true);
-
-        // reset inputs
-        setShelterName("");
-        setUserName("");
-        setEmail("");
-        setWhatsapp("");
-        setPetCount("");
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario a Google Forms", error);
-        setIsSubmitting(false);
-        alert("Hubo un error al enviar la solicitud. Por favor intenta de nuevo.");
+      const docRef = await addDoc(collection(db, "waitlist"), {
+        shelterName,
+        userName,
+        email,
+        whatsapp: whatsapp || null,
+        petCount,
+        timestamp: new Date().toISOString()
       });
+
+      const newEntry: WaitlistEntry = {
+        id: docRef.id,
+        shelterName,
+        userName,
+        email,
+        whatsapp: whatsapp || undefined,
+        petCount,
+        timestamp: new Date().toISOString()
+      };
+
+      onRegisterSuccess(newEntry);
+
+      setIsSubmitting(false);
+      setIsSuccess(true);
+
+      // reset inputs
+      setShelterName("");
+      setUserName("");
+      setEmail("");
+      setWhatsapp("");
+      setPetCount("");
+    } catch (error) {
+      console.error("Error al guardar en Firestore", error);
+      setIsSubmitting(false);
+      alert("Hubo un error al enviar la solicitud. Por favor intenta de nuevo.");
+    }
   };
 
   return (
@@ -132,16 +117,14 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                 Hagamos equipo por ellos 🐾
               </h3>
               <p className="text-sm text-emerald-100 font-sans leading-relaxed">
-                Estamos abriendo accesos semanales ordenados para asegurar la mejor asesoría técnica directa a cada refugio.
+                Estamos abriendo accesos semanales ordenados para asegurar la mejor asesoría técnica directa a cada clínica.
               </p>
-
-
             </div>
 
             {/* Shield disclaimer */}
             <div className="relative z-10 pt-8 mt-8 border-t border-emerald-100/15 flex items-center space-x-2.5 text-[11px] text-emerald-200">
               <Shield className="h-4 w-4 shrink-0 text-[#E9C46A]" />
-              <span>Garantía de Privacidad de Datos Animales.</span>
+              <span>Garantía de Privacidad de Datos Clínicos.</span>
             </div>
           </div>
 
@@ -166,13 +149,13 @@ export default function CTAForm({ onRegisterSuccess }: CTAFormProps) {
                   {/* Shelter Name input */}
                   <div className="space-y-1">
                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-widest font-mono">
-                      Nombre del Refugio / Organización *
+                      Nombre de la Clínica Veterinaria *
                     </label>
                     <input
                       type="text"
                       value={shelterName}
                       onChange={(e) => setShelterName(e.target.value)}
-                      placeholder="Ej. Albergue La Esperanza MTY"
+                      placeholder="Ej. Veterinaria San Roque"
                       className={`w-full px-4 py-3 rounded-xl bg-gray-50 border ${errors.shelterName ? "border-red-400 focus:ring-red-200" : "border-gray-200 focus:border-[#2D6A4F] focus:ring-[#2D6A4F]/25"
                         } focus:ring-4 focus:outline-none text-sm transition-all text-gray-800`}
                     />

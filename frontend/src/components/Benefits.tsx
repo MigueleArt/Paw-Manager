@@ -23,7 +23,7 @@ export default function Benefits() {
       badge: "-50% Inasistencias"
     },
     {
-      img: "https://images.unsplash.com/photo-1612531822719-d0bdc44b6f5a?w=800&q=80",
+      img: "https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=800&q=80",
       alt: "Veterinario sonriente entregando una mascota saludable a su dueño",
       title: "Da seguimiento post-consulta sin esfuerzo",
       tagline: "SEGUIMIENTO CLÍNICO",
