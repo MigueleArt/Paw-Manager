@@ -1,41 +1,41 @@
 import React from "react";
 import { motion } from "motion/react";
-import { AlertCircle, FileSpreadsheet, MessagesSquare, CalendarOff, ArrowDownRight } from "lucide-react";
+import { AlertCircle, FileSpreadsheet, Activity, CalendarOff, ArrowDownRight } from "lucide-react";
 
 export default function Problems() {
   const painPoints = [
     {
       icon: <FileSpreadsheet className="h-8 w-8 text-[#E76F51]" />,
-      title: "Tienes la info de tus mascotas en 5 lugares distintos",
-      description: "Hojas de Excel desactualizadas, cuadernos físicos con tachones, chats archivados y fotos regadas en cuatro cuentas de Drive.",
+      title: "Historiales médicos dispersos y desordenados",
+      description: "Hojas de Excel desactualizadas, expedientes físicos con tachones, chats con dueños y resultados de laboratorio en sistemas distintos.",
       list: [
-        "No recuerdas qué perro está esterilizado",
-        "Pérdida de historial original al cambiar de voluntario",
+        "No recuerdas qué paciente es alérgico a cierto medicamento",
+        "Pérdida de historial clínico original al cambiar de recepcionista",
         "Buscar el carnet de vacunación toma 15 minutos"
       ],
       emoji: "🗂️"
     },
     {
-      icon: <MessagesSquare className="h-8 w-8 text-[#E76F51]" />,
-      title: "Las solicitudes de adopción se pierden entre chats",
-      description: "Mensajes directos de Instagram, Facebook Messenger, correos e hilos de WhatsApp sin seguimiento correcto. Nunca sabes en qué quedó.",
+      icon: <Activity className="h-8 w-8 text-[#E76F51]" />,
+      title: "Falta de seguimiento en tratamientos y urgencias",
+      description: "Mensajes de WhatsApp perdidos y recordatorios en libretas hacen que los dueños olviden las consultas de seguimiento de sus mascotas.",
       list: [
-        "Un adoptante ideal espera una respuesta por días",
-        "Falta de filtro estructurado para candidatos",
-        "Duplicación de contactos para el mismo peludo"
+        "Un paciente crítico no asiste a su revisión post-operatoria",
+        "Falta de estructura para el seguimiento de enfermedades crónicas",
+        "Comunicación ineficiente con el equipo médico"
       ],
-      emoji: "📬"
+      emoji: "🏥"
     },
     {
       icon: <CalendarOff className="h-8 w-8 text-[#E76F51]" />,
-      title: "Se te olvidan vacunas clave y citas de control",
-      description: "Notas en papel pegadas al refri o recordatorios perdidos en el celular personal de un voluntario. Riesgos de salud continuados.",
+      title: "Agenda caótica: Empalmes y olvidos",
+      description: "Agendas en papel, salas de espera llenas y turnos duplicados. Pierdes tiempo y dinero por citas no asistidas o mal gestionadas.",
       list: [
-        "Mascotas que reciben la misma dosis dos veces",
-        "Control de desparasitaciones vencido",
-        "No recuerdas a quién le toca visita médica mañana"
+        "Mascotas que llegan al mismo tiempo para el mismo doctor",
+        "Dueños que olvidan su cita porque no hubo recordatorio",
+        "Tiempos muertos que reducen la rentabilidad de la clínica"
       ],
-      emoji: "💉"
+      emoji: "📅"
     }
   ];
 
@@ -49,14 +49,14 @@ export default function Problems() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <span className="text-xs font-bold uppercase tracking-widest text-[#F4845F] font-mono bg-[#F4845F]/10 px-3.5 py-1.5 rounded-full">
-            El Caos Diario en los Refugios
+            El Caos Diario en las Clínicas
           </span>
           <h2 className="text-3xl sm:text-4xl font-serif font-black text-[#1B4332] leading-tight">
             ¿Te identificas con alguna de estas situaciones?
           </h2>
           <p className="text-gray-600 font-sans">
-            La gestión voluntaria es un acto de amor puro, pero la falta de herramientas adecuadas 
-            a menudo drena la energía de tu maravilloso equipo.
+            Cuidar de la salud de las mascotas es tu prioridad, pero la gestión administrativa
+            obsoleta a menudo drena la energía de tu equipo veterinario y reduce tu rentabilidad.
           </p>
         </div>
 
@@ -116,7 +116,7 @@ export default function Problems() {
               {/* Bottom tag decoration */}
               <div className="text-right mt-6">
                 <span className="text-[11px] font-bold font-mono text-gray-400 uppercase tracking-widest group-hover:text-[#E76F51] transition-colors duration-200">
-                  Costo: Tiempo y Estrés
+                  Costo: Dinero y Prestigio
                 </span>
               </div>
             </motion.div>
@@ -131,8 +131,8 @@ export default function Problems() {
           className="mt-16 bg-[#FDF8F0] border border-[#E9C46A]/20 rounded-2xl p-6 sm:p-8 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between text-left gap-6"
         >
           <div className="space-y-1">
-            <h4 className="font-serif font-bold text-lg text-[#1B4332]">Sabemos que cada minuto cuenta para salvar vidas</h4>
-            <p className="text-sm text-gray-600 font-sans">No deberías lidiar con procesos burocráticos y desordenados en el momento más importante de una mascota.</p>
+            <h4 className="font-serif font-bold text-lg text-[#1B4332]">Sabemos que tu tiempo es para salvar vidas, no para el papeleo</h4>
+            <p className="text-sm text-gray-600 font-sans">No deberías lidiar con procesos burocráticos y desordenados durante una urgencia médica.</p>
           </div>
           <button
             onClick={() => {
