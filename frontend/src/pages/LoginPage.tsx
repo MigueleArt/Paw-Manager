@@ -24,31 +24,36 @@ export default function LoginPage() {
     try {
       if (isRegistering) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        
-        // Crear la clínica primero
+
         const clinicRef = await addDoc(collection(db, 'clinics'), {
           name: clinicName,
           ownerUid: userCredential.user.uid,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
         });
 
-        // Crear automáticamente el documento en la colección 'roles' vinculado a la clínica
         await addDoc(collection(db, 'roles'), {
-          name: fullName, 
+          name: fullName,
           email: email,
-          role: 'Administrador', 
+          role: 'Administrador',
           status: 'Activo',
           uid: userCredential.user.uid,
-          clinicId: clinicRef.id
+          clinicId: clinicRef.id,
         });
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
+
       navigate('/dashboard');
     } catch (err: any) {
       console.error(err);
+
       let errorMessage = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+
+      if (
+        err.code === 'auth/invalid-credential' ||
+        err.code === 'auth/user-not-found' ||
+        err.code === 'auth/wrong-password'
+      ) {
         errorMessage = 'Correo o contraseña incorrectos. Por favor, verifica tus datos.';
       } else if (err.code === 'auth/email-already-in-use') {
         errorMessage = 'Este correo ya está registrado. Por favor, inicia sesión.';
@@ -57,16 +62,25 @@ export default function LoginPage() {
       } else if (err.code === 'auth/invalid-email') {
         errorMessage = 'El formato del correo electrónico no es válido.';
       }
+
       setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleToggleAuthMode = () => {
+    setIsRegistering(!isRegistering);
+    setError(null);
+    setEmail('');
+    setPassword('');
+    setFullName('');
+    setClinicName('');
+  };
+
   return (
     <div className="min-h-screen bg-[#FDF8F0] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      
-      <button 
+      <button
         onClick={() => navigate('/')}
         className="absolute top-6 left-6 sm:top-8 sm:left-8 flex items-center text-gray-500 hover:text-[#1B4332] transition-colors font-medium text-sm bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200 shadow-sm hover:shadow-md"
       >
@@ -74,54 +88,54 @@ export default function LoginPage() {
         Volver al inicio
       </button>
 
-      {/* Elementos decorativos de fondo */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <motion.div 
+        <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 150, repeat: Infinity, ease: 'linear' }}
           className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-[#E9C46A]/10 blur-3xl"
         />
-        <motion.div 
+        <motion.div
           animate={{ rotate: -360 }}
-          transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 150, repeat: Infinity, ease: 'linear' }}
           className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[60%] rounded-full bg-[#1B4332]/5 blur-3xl"
         />
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
         className="sm:mx-auto sm:w-full sm:max-w-md z-10"
       >
         <motion.div
           initial={{ scale: 0, rotate: -10 }}
           animate={{ scale: 1, rotate: 3 }}
-          transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
+          transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
           className="mx-auto h-16 w-16 bg-[#1B4332] rounded-2xl flex items-center justify-center shadow-lg"
         >
           <PawPrint className="h-10 w-10 text-[#E9C46A] -rotate-3" />
         </motion.div>
+
         <h2 className="mt-6 text-center text-3xl font-extrabold text-[#1B4332]">
           {isRegistering ? 'Crea tu Veterinaria' : 'Accede a tu Clínica'}
         </h2>
+
         <p className="mt-2 text-center text-sm text-gray-600">
           PawManager, el sistema definitivo.
         </p>
       </motion.div>
 
       <div className="mt-8 mx-4 sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
+          transition={{ delay: 0.3, type: 'spring', stiffness: 100 }}
           className="bg-white/90 backdrop-blur-md py-8 px-4 shadow-2xl shadow-[#1B4332]/10 sm:rounded-3xl sm:px-10 border border-white"
         >
           <form className="space-y-6" onSubmit={handleAuth}>
-            
             <AnimatePresence mode="wait">
               {error && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, height: 0, scale: 0.9 }}
                   animate={{ opacity: 1, height: 'auto', scale: 1 }}
                   exit={{ opacity: 0, height: 0, scale: 0.9 }}
@@ -135,7 +149,7 @@ export default function LoginPage() {
 
             <AnimatePresence>
               {isRegistering && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
@@ -145,10 +159,12 @@ export default function LoginPage() {
                     <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
                       Nombre Completo
                     </label>
+
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <User className="h-5 w-5 text-gray-400" />
                       </div>
+
                       <input
                         id="fullName"
                         type="text"
@@ -165,10 +181,12 @@ export default function LoginPage() {
                     <label htmlFor="clinicName" className="block text-sm font-medium text-gray-700">
                       Nombre de la Veterinaria
                     </label>
+
                     <div className="mt-1 relative rounded-md shadow-sm">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Building className="h-5 w-5 text-gray-400" />
                       </div>
+
                       <input
                         id="clinicName"
                         type="text"
@@ -188,10 +206,12 @@ export default function LoginPage() {
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Correo electrónico
               </label>
+
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
+
                 <input
                   id="email"
                   name="email"
@@ -210,15 +230,17 @@ export default function LoginPage() {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Contraseña
               </label>
+
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
+
                 <input
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete={isRegistering ? 'new-password' : 'current-password'}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -232,10 +254,7 @@ export default function LoginPage() {
               <div className="text-sm">
                 <button
                   type="button"
-                  onClick={() => {
-                    setIsRegistering(!isRegistering);
-                    setError(null);
-                  }}
+                  onClick={handleToggleAuthMode}
                   className="font-medium text-[#1B4332] hover:text-[#2a6b50] transition-colors"
                 >
                   {isRegistering ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
@@ -249,7 +268,7 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-[#1B4332] hover:bg-[#2a6b50] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B4332] transition-all group disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {loading ? 'Procesando...' : (isRegistering ? 'Crear Cuenta' : 'Ingresar al Dashboard')}
+                {loading ? 'Procesando...' : isRegistering ? 'Crear Cuenta' : 'Ingresar al Dashboard'}
                 {!loading && <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />}
               </button>
             </motion.div>
