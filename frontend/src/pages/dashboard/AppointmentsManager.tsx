@@ -22,6 +22,9 @@ export default function AppointmentsManager() {
     reason: ''
   });
 
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  
   useEffect(() => {
     if (!userData?.clinicId) return;
     const clinicId = userData.clinicId;
@@ -55,10 +58,15 @@ export default function AppointmentsManager() {
 
   const handleAddAppt = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    setLoading(true);
+    setErrorMessage('');
+
     const activeClinicId = userData?.clinicId || 'clinica_por_defecto';
-    
+
     if (!newAppt.petName || !newAppt.doctor) {
-      alert("Por favor escribe/selecciona un paciente y un doctor.");
+      setErrorMessage("Por favor escribe/selecciona un paciente y un doctor.");
+      setLoading(false);
       return;
     }
 
@@ -81,6 +89,31 @@ export default function AppointmentsManager() {
         });
         finalPetId = newPetRef.id;
       }
+
+      await addDoc(collection(db, 'appointments'), {
+        ...newAppt,
+        petId: finalPetId,
+        clinicId: activeClinicId,
+        status: 'Pendiente'
+      });
+
+      setShowModal(false);
+      setNewAppt({ 
+        date: new Date().toISOString().split('T')[0], 
+        time: '09:00', 
+        petId: '', 
+        petName: '', 
+        type: 'Consulta General', 
+        doctor: '',
+        reason: ''
+      });
+    } catch (error: any) {
+     console.error("Error adding appointment:", error);
+     setErrorMessage(`Error al agendar cita: ${error.message}`);
+    } finally {
+     setLoading(false);
+    }
+   };
 
       await addDoc(collection(db, 'appointments'), {
         ...newAppt,
@@ -284,9 +317,19 @@ export default function AppointmentsManager() {
                 />
               </div>
 
-              <button type="submit" className="w-full bg-[#1B4332] hover:bg-[#2a6b50] text-white p-3.5 rounded-xl font-bold mt-4 transition-colors flex justify-center items-center">
+              {errorMessage && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium">
+                  {errorMessage}
+                  </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#1B4332] hover:bg-[#2a6b50] disabled:bg-gray-400 disabled:cursor-not-allowed text-white p-3.5 rounded-xl font-bold mt-4 transition-colors flex justify-center items-center"
+              >
                 <CalendarIcon className="w-5 h-5 mr-2" />
-                Agendar Cita
+                {loading ? 'Guardando...' : 'Agendar Cita'}
               </button>
             </form>
           </div>

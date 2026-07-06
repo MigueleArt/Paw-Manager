@@ -12,6 +12,7 @@ export default function DashboardLayout() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [serverStatus, setServerStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const notificationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,6 +33,26 @@ export default function DashboardLayout() {
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+  const checkServerStatus = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${apiUrl}/`);
+
+      if (!response.ok) {
+        throw new Error('Servidor no disponible');
+      }
+
+      setServerStatus('online');
+    } catch (error) {
+      console.error('Error al conectar con el backend:', error);
+      setServerStatus('offline');
+    }
+  };
+
+  checkServerStatus();
+}, []);
 
   const navigation = [
     { name: 'Inicio', href: '/dashboard', icon: LayoutDashboard },
@@ -120,9 +141,36 @@ export default function DashboardLayout() {
             </div>
           </div>
           <div className="ml-4 flex items-center space-x-2 sm:space-x-4">
-            
-            {/* Notification Bell */}
-            <div className="relative" ref={notificationRef}>
+
+  {/* Indicador del servidor */}
+  <div
+    className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border ${
+      serverStatus === 'online'
+        ? 'bg-green-50 text-green-700 border-green-200'
+        : serverStatus === 'offline'
+        ? 'bg-red-50 text-red-700 border-red-200'
+        : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+    }`}
+  >
+    <span
+      className={`w-2 h-2 rounded-full ${
+        serverStatus === 'online'
+          ? 'bg-green-500'
+          : serverStatus === 'offline'
+          ? 'bg-red-500'
+          : 'bg-yellow-500'
+      }`}
+    ></span>
+
+    {serverStatus === 'online'
+      ? 'Servidor activo'
+      : serverStatus === 'offline'
+      ? 'Servidor no disponible'
+      : 'Verificando servidor...'}
+  </div>
+
+  {/* Notification Bell */}
+  <div className="relative" ref={notificationRef}>
               <button 
                 onClick={() => setShowNotifications(!showNotifications)}
                 className="p-2 text-gray-400 hover:text-gray-500 relative transition-colors"

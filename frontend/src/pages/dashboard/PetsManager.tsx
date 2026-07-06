@@ -7,6 +7,8 @@ import { useAuth } from '../../context/AuthContext';
 export default function PetsManager() {
   const { user, userData } = useAuth();
   const [pets, setPets] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+const [errorMessage, setErrorMessage] = useState('');
   
   const [showModal, setShowModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
@@ -40,33 +42,40 @@ export default function PetsManager() {
   }, [activePet, userData]);
 
   const handleSavePet = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const activeClinicId = userData?.clinicId || 'clinica_por_defecto';
+  e.preventDefault();
 
-    try {
-      if (editingPet) {
-        await updateDoc(doc(db, 'pets', editingPet.id), {
-          name: newPet.name,
-          species: newPet.species,
-          breed: newPet.breed,
-          age: newPet.age,
-          owner: newPet.owner
-        });
-      } else {
-        await addDoc(collection(db, 'pets'), {
-          ...newPet,
-          clinicId: activeClinicId,
-          lastVisit: new Date().toLocaleDateString('es-ES')
-        });
-      }
-      setShowModal(false);
-      setEditingPet(null);
-      setNewPet({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
-    } catch (error: any) {
-      console.error("Error saving pet:", error);
-      alert(`Error al guardar paciente: ${error.message}`);
+  setLoading(true);
+  setErrorMessage('');
+
+  const activeClinicId = userData?.clinicId || 'clinica_por_defecto';
+
+  try {
+    if (editingPet) {
+      await updateDoc(doc(db, 'pets', editingPet.id), {
+        name: newPet.name,
+        species: newPet.species,
+        breed: newPet.breed,
+        age: newPet.age,
+        owner: newPet.owner
+      });
+    } else {
+      await addDoc(collection(db, 'pets'), {
+        ...newPet,
+        clinicId: activeClinicId,
+        lastVisit: new Date().toLocaleDateString('es-ES')
+      });
     }
-  };
+
+    setShowModal(false);
+    setEditingPet(null);
+    setNewPet({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
+  } catch (error: any) {
+    console.error("Error saving pet:", error);
+    setErrorMessage(`Error al guardar paciente: ${error.message}`);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleEditClick = (pet: any) => {
     setEditingPet(pet);
@@ -215,11 +224,20 @@ export default function PetsManager() {
               <div className="flex space-x-4">
                 <div className="flex-1">
                   <input required type="number" min="0" max="50" placeholder="Edad (años)" value={newPet.age} onChange={e => setNewPet({...newPet, age: e.target.value})} className="w-full border p-3 rounded-xl bg-gray-50" />
+                  {errorMessage && (
+  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium">
+    {errorMessage}
+  </div>
+)}  
                 </div>
               </div>
               <input required type="text" placeholder="Nombre del Dueño" value={newPet.owner} onChange={e => setNewPet({...newPet, owner: e.target.value})} className="w-full border p-3 rounded-xl bg-gray-50" />
-              <button type="submit" className="w-full bg-[#1B4332] text-white p-3 rounded-xl font-bold mt-2 hover:bg-[#2a6b50] transition-colors">
-                {editingPet ? 'Guardar Cambios' : 'Registrar Paciente'}
+              <button
+              type="submit"
+             disabled={loading}
+              className="w-full bg-[#1B4332] text-white p-3 rounded-xl font-bold mt-2 hover:bg-[#2a6b50] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+              {loading ? 'Guardando...' : editingPet ? 'Guardar Cambios' : 'Registrar Paciente'}
               </button>
             </form>
           </div>

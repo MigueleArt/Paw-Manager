@@ -103,6 +103,68 @@ PawManager está diseñado para evolucionar hacia un SaaS completo con:
 - Reportes de impacto para donantes
 - Roles y permisos para voluntarios
 
+## Ejecución del proyecto
+
+### Requisitos previos
+
+Antes de ejecutar el proyecto es necesario contar con:
+
+* Node.js
+* npm
+
+### Backend
+
+Para instalar las dependencias y ejecutar el backend:
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+El backend se ejecuta localmente en:
+
+```text
+http://localhost:3000
+```
+
+Para comprobar que el backend está funcionando correctamente, abre esa dirección en el navegador. Si el servidor responde, el indicador del dashboard mostrará **"Servidor activo"**.
+
+### Frontend
+
+Para instalar las dependencias y ejecutar el frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+El frontend se ejecuta localmente en:
+
+```text
+http://localhost:5173
+```
+
+## Variables de entorno
+
+### Frontend
+
+Crear un archivo `.env` dentro de la carpeta `frontend` con la siguiente variable:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+También se debe incluir un archivo `.env.example` para documentar las variables necesarias del proyecto.
+
+### Backend
+
+El backend utiliza su propio archivo `.env` para configurar las variables necesarias para la base de datos, autenticación y demás servicios utilizados por el sistema.
+
+## Seguridad
+
+No deben subirse al repositorio claves, credenciales, tokens o archivos `.env` con información real. Para documentar las variables necesarias se debe utilizar únicamente el archivo `.env.example`.
 
 ## Autor
 
