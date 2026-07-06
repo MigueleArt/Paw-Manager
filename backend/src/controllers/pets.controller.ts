@@ -1,35 +1,44 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { db } from '../config/firebase';
+import { AppError } from '../middlewares/errorMiddleware';
 
 const petsCollection = db.collection('pets');
 
 // GET /api/pets?clinicId=xxxx
-export const getPets = async (req: Request, res: Response) => {
+export const getPets = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { clinicId } = req.query;
     let queryRef: FirebaseFirestore.Query = petsCollection;
 
-    if (clinicId) {
+    if (typeof clinicId === 'string' && clinicId.trim()) {
       queryRef = queryRef.where('clinicId', '==', clinicId);
     }
 
     const snapshot = await queryRef.get();
-    const pets = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    res.status(200).json(pets);
+
+    const pets = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return res.status(200).json(pets);
   } catch (error) {
-    console.error('Error al obtener pacientes:', error);
-    res.status(500).json({ message: 'Error al obtener los pacientes', error: (error as Error).message });
+    return next(error);
   }
 };
 
 // POST /api/pets
-export const createPet = async (req: Request, res: Response) => {
+export const createPet = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { name, species, breed, age, owner, clinicId } = req.body;
-
-    if (!name || !species || !breed || !age || !owner) {
-      return res.status(400).json({ message: 'Faltan campos obligatorios' });
-    }
 
     const newPet = {
       name,
@@ -42,82 +51,130 @@ export const createPet = async (req: Request, res: Response) => {
     };
 
     const docRef = await petsCollection.add(newPet);
-    res.status(201).json({ id: docRef.id, ...newPet });
+
+    return res.status(201).json({
+      id: docRef.id,
+      ...newPet,
+    });
   } catch (error) {
-    console.error('Error al crear paciente:', error);
-    res.status(500).json({ message: 'Error al crear el paciente', error: (error as Error).message });
+    return next(error);
   }
 };
 
 // PUT /api/pets/:id
-export const updatePet = async (req: Request, res: Response) => {
+export const updatePet = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params;
-    const { name, species, breed, age, owner } = req.body;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+
+    if (!id || !id.trim()) {
+      return next(new AppError('Identificador de paciente inválido.', 400));
+    }
+
+    const updatedData = req.body;
 
     const petRef = petsCollection.doc(id);
     const doc = await petRef.get();
 
     if (!doc.exists) {
-      return res.status(404).json({ message: 'Paciente no encontrado' });
+      return next(new AppError('Paciente no encontrado.', 404));
     }
 
-    const updatedData = { name, species, breed, age, owner };
     await petRef.update(updatedData);
 
-    res.status(200).json({ id, ...doc.data(), ...updatedData });
+    return res.status(200).json({
+      id,
+      ...doc.data(),
+      ...updatedData,
+    });
   } catch (error) {
-    console.error('Error al actualizar paciente:', error);
-    res.status(500).json({ message: 'Error al actualizar el paciente', error: (error as Error).message });
+    return next(error);
   }
 };
 
 // DELETE /api/pets/:id
-export const deletePet = async (req: Request, res: Response) => {
+export const deletePet = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+
+    if (!id || !id.trim()) {
+      return next(new AppError('Identificador de paciente inválido.', 400));
+    }
+
     const petRef = petsCollection.doc(id);
     const doc = await petRef.get();
 
     if (!doc.exists) {
-      return res.status(404).json({ message: 'Paciente no encontrado' });
+      return next(new AppError('Paciente no encontrado.', 404));
     }
 
     await petRef.delete();
-    res.status(200).json({ message: 'Paciente eliminado correctamente', id });
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Paciente eliminado correctamente.',
+      id,
+    });
   } catch (error) {
-    console.error('Error al eliminar paciente:', error);
-    res.status(500).json({ message: 'Error al eliminar el paciente', error: (error as Error).message });
+    return next(error);
   }
 };
 
-// GET /api/pets/:id/notes  (historial clínico)
-export const getPetNotes = async (req: Request, res: Response) => {
+// GET /api/pets/:id/notes
+export const getPetNotes = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
+
+    if (!id || !id.trim()) {
+      return next(new AppError('Identificador de paciente inválido.', 400));
+    }
+
     const notesSnapshot = await petsCollection
       .doc(id)
       .collection('notes')
       .orderBy('timestamp', 'desc')
       .get();
 
-    const notes = notesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    res.status(200).json(notes);
+    const notes = notesSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return res.status(200).json(notes);
   } catch (error) {
-    console.error('Error al obtener historial:', error);
-    res.status(500).json({ message: 'Error al obtener el historial', error: (error as Error).message });
+    return next(error);
   }
 };
 
 // POST /api/pets/:id/notes
-export const addPetNote = async (req: Request, res: Response) => {
+export const addPetNote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { id } = req.params;
-    const { text, doctor, clinicId } = req.body;
+    const rawId = req.params.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
 
-    if (!text || !text.trim()) {
-      return res.status(400).json({ message: 'La nota no puede estar vacía' });
+    if (!id || !id.trim()) {
+      return next(new AppError('Identificador de paciente inválido.', 400));
     }
+
+    const { text, doctor, clinicId } = req.body;
 
     const newNote = {
       text,
@@ -126,10 +183,16 @@ export const addPetNote = async (req: Request, res: Response) => {
       timestamp: new Date().toISOString(),
     };
 
-    const noteRef = await petsCollection.doc(id).collection('notes').add(newNote);
-    res.status(201).json({ id: noteRef.id, ...newNote });
+    const noteRef = await petsCollection
+      .doc(id)
+      .collection('notes')
+      .add(newNote);
+
+    return res.status(201).json({
+      id: noteRef.id,
+      ...newNote,
+    });
   } catch (error) {
-    console.error('Error al agregar nota:', error);
-    res.status(500).json({ message: 'Error al agregar la nota', error: (error as Error).message });
+    return next(error);
   }
 };
