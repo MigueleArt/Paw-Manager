@@ -1,43 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Eye, FileText, X, Trash2, Edit2, Send } from 'lucide-react';
-import { collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc, query, orderBy, where } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 import { useAuth } from '../../context/AuthContext';
+import { petsApi } from '../../lib/api';
 
 export default function PetsManager() {
   const { user, userData } = useAuth();
   const [pets, setPets] = useState<any[]>([]);
-  
+  const [loading, setLoading] = useState(true);
+
   const [showModal, setShowModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  
+
   const [editingPet, setEditingPet] = useState<any>(null);
   const [activePet, setActivePet] = useState<any>(null);
-  
+
   const [newPet, setNewPet] = useState({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
   const [newNote, setNewNote] = useState('');
   const [notes, setNotes] = useState<any[]>([]);
 
-  useEffect(() => {
+  const fetchPets = async () => {
     if (!userData?.clinicId) return;
-    
-    const q = query(collection(db, 'pets'), where('clinicId', '==', userData.clinicId));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const petsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    try {
+      setLoading(true);
+      const petsData = await petsApi.getAll(userData.clinicId);
       setPets(petsData);
-    });
-    return () => unsubscribe();
-  }, [userData]);
+    } catch (error) {
+      console.error('Error al obtener pacientes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!activePet || !userData?.clinicId) return;
-    const notesRef = collection(db, 'pets', activePet.id, 'notes');
-    const q = query(notesRef, orderBy('timestamp', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setNotes(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    });
-    return () => unsubscribe();
-  }, [activePet, userData]);
+    fetchPets();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData]);
+
+  const fetchNotes = async (petId: string) => {
+    try {
+      const notesData = await petsApi.getNotes(petId);
+      setNotes(notesData);
+    } catch (error) {
+      console.error('Error al obtener historial:', error);
+    }
+  };
 
   const handleSavePet = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,25 +51,25 @@ export default function PetsManager() {
 
     try {
       if (editingPet) {
-        await updateDoc(doc(db, 'pets', editingPet.id), {
+        await petsApi.update(editingPet.id, {
           name: newPet.name,
           species: newPet.species,
           breed: newPet.breed,
           age: newPet.age,
-          owner: newPet.owner
+          owner: newPet.owner,
         });
       } else {
-        await addDoc(collection(db, 'pets'), {
+        await petsApi.create({
           ...newPet,
           clinicId: activeClinicId,
-          lastVisit: new Date().toLocaleDateString('es-ES')
         });
       }
       setShowModal(false);
       setEditingPet(null);
       setNewPet({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
+      await fetchPets();
     } catch (error: any) {
-      console.error("Error saving pet:", error);
+      console.error('Error saving pet:', error);
       alert(`Error al guardar paciente: ${error.message}`);
     }
   };
@@ -81,11 +87,12 @@ export default function PetsManager() {
   };
 
   const handleDeletePet = async (id: string) => {
-    if (window.confirm("¿Estás seguro de eliminar a este paciente?")) {
+    if (window.confirm('¿Estás seguro de eliminar a este paciente?')) {
       try {
-        await deleteDoc(doc(db, 'pets', id));
+        await petsApi.remove(id);
+        await fetchPets();
       } catch (error) {
-        console.error("Error deleting pet:", error);
+        console.error('Error deleting pet:', error);
       }
     }
   };
@@ -93,25 +100,24 @@ export default function PetsManager() {
   const handleAddNote = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newNote.trim() || !activePet || !userData?.clinicId) return;
-    
+
     try {
-      const notesRef = collection(db, 'pets', activePet.id, 'notes');
-      const activeClinicId = userData?.clinicId || 'clinica_por_defecto';
-      await addDoc(notesRef, {
+      await petsApi.addNote(activePet.id, {
         text: newNote,
         doctor: userData?.name || user?.email?.split('@')[0] || 'Admin',
-        clinicId: activeClinicId,
-        timestamp: new Date().toISOString()
+        clinicId: userData?.clinicId,
       });
       setNewNote('');
+      await fetchNotes(activePet.id);
     } catch (error) {
-      console.error("Error adding note:", error);
+      console.error('Error adding note:', error);
     }
   };
 
   const openHistory = (pet: any) => {
     setActivePet(pet);
     setShowHistoryModal(true);
+    fetchNotes(pet.id);
   };
 
   return (
@@ -138,11 +144,13 @@ export default function PetsManager() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {pets.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-500">Cargando pacientes...</p>
+        ) : pets.length === 0 ? (
           <p className="text-gray-500">No hay pacientes registrados aún.</p>
         ) : pets.map((pet) => (
           <div key={pet.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow relative">
-            <button 
+            <button
               onClick={() => handleDeletePet(pet.id)}
               className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
               title="Eliminar paciente"
@@ -164,7 +172,7 @@ export default function PetsManager() {
                 {pet.species}
               </span>
             </div>
-            
+
             <div className="border-t border-gray-50 pt-4 mb-4">
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-gray-500">Dueño:</span>
@@ -177,14 +185,14 @@ export default function PetsManager() {
             </div>
 
             <div className="flex space-x-2">
-              <button 
+              <button
                 onClick={() => openHistory(pet)}
                 className="flex-1 bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-medium flex items-center justify-center hover:bg-blue-100 transition-colors"
               >
                 <FileText className="h-4 w-4 mr-1" />
                 Historial
               </button>
-              <button 
+              <button
                 onClick={() => handleEditClick(pet)}
                 className="flex-1 border border-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium flex items-center justify-center hover:bg-gray-50 transition-colors"
               >
@@ -237,7 +245,7 @@ export default function PetsManager() {
               </div>
               <button onClick={() => setShowHistoryModal(false)} className="text-gray-500 hover:text-gray-800 bg-gray-100 p-2 rounded-full"><X className="w-5 h-5" /></button>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
               {notes.length === 0 ? (
                 <div className="text-center text-gray-400 py-8">
@@ -259,9 +267,9 @@ export default function PetsManager() {
 
             <div className="p-6 border-t border-gray-100 shrink-0 bg-white rounded-b-2xl">
               <form onSubmit={handleAddNote} className="flex space-x-2">
-                <input 
-                  type="text" 
-                  placeholder="Agregar nueva nota médica, diagnóstico o receta..." 
+                <input
+                  type="text"
+                  placeholder="Agregar nueva nota médica, diagnóstico o receta..."
                   value={newNote}
                   onChange={e => setNewNote(e.target.value)}
                   className="flex-1 border border-gray-200 p-3 rounded-xl bg-gray-50 focus:outline-none focus:border-[#1B4332]"
