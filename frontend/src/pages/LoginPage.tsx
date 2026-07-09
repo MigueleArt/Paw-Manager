@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PawPrint, Mail, Lock, ArrowRight, AlertTriangle, ArrowLeft, Building, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { addDoc, collection } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
+
+type ViewMode = 'login' | 'register' | 'forgot';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -15,6 +17,12 @@ export default function LoginPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const [view, setView] = useState<ViewMode>('login');
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [resetSent, setResetSent] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [resetLoading, setResetLoading] = useState(false);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +71,40 @@ export default function LoginPage() {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetError(null);
+    setResetLoading(true);
+
+    try {
+      await sendPasswordResetEmail(auth, forgotEmail, {
+        url: `${window.location.origin}/reset-password`,
+        handleCodeInApp: true,
+      });
+      setResetSent(true);
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === 'auth/invalid-email') {
+        setResetError('El formato del correo electrónico no es válido.');
+      } else if (err.code === 'auth/user-not-found') {
+        // Por seguridad no revelamos si el correo existe o no en el sistema.
+        setResetSent(true);
+      } else {
+        setResetError('Ocurrió un error al enviar el correo. Inténtalo de nuevo.');
+      }
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const backToLogin = () => {
+    setView('login');
+    setIsRegistering(false);
+    setResetSent(false);
+    setResetError(null);
+    setForgotEmail('');
+  };
+
   return (
     <div className="min-h-screen bg-[#FDF8F0] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       
@@ -103,10 +145,10 @@ export default function LoginPage() {
           <PawPrint className="h-10 w-10 text-[#E9C46A] -rotate-3" />
         </motion.div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-[#1B4332]">
-          {isRegistering ? 'Crea tu Veterinaria' : 'Accede a tu Clínica'}
+          {view === 'forgot' ? 'Recupera tu contraseña' : isRegistering ? 'Crea tu Veterinaria' : 'Accede a tu Clínica'}
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          PawManager, el sistema definitivo.
+          {view === 'forgot' ? 'Te enviaremos un enlace para restablecerla.' : 'PawManager, el sistema definitivo.'}
         </p>
       </motion.div>
 
@@ -117,6 +159,86 @@ export default function LoginPage() {
           transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
           className="bg-white/90 backdrop-blur-md py-8 px-4 shadow-2xl shadow-[#1B4332]/10 sm:rounded-3xl sm:px-10 border border-white"
         >
+          {view === 'forgot' ? (
+            resetSent ? (
+              <div className="text-center space-y-5 py-4">
+                <div className="mx-auto h-14 w-14 bg-green-50 rounded-full flex items-center justify-center">
+                  <Mail className="h-7 w-7 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-gray-800 font-semibold">Revisa tu correo</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Si <span className="font-medium">{forgotEmail}</span> está registrado, te enviamos un enlace
+                    para restablecer tu contraseña. El enlace expira en 1 hora.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={backToLogin}
+                  className="w-full flex justify-center items-center py-3 px-4 rounded-xl text-sm font-bold text-[#1B4332] border border-[#1B4332] hover:bg-[#1B4332]/5 transition-colors"
+                >
+                  Volver a iniciar sesión
+                </button>
+              </div>
+            ) : (
+              <form className="space-y-6" onSubmit={handleForgotPassword}>
+                <AnimatePresence mode="wait">
+                  {resetError && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, height: 'auto', scale: 1 }}
+                      exit={{ opacity: 0, height: 0, scale: 0.9 }}
+                      className="bg-red-50 p-3 rounded-xl border border-red-200 flex items-start space-x-2"
+                    >
+                      <AlertTriangle className="h-5 w-5 text-red-500 shrink-0" />
+                      <span className="text-sm text-red-700">{resetError}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div>
+                  <label htmlFor="forgotEmail" className="block text-sm font-medium text-gray-700">
+                    Correo electrónico
+                  </label>
+                  <div className="mt-1 relative rounded-md shadow-sm">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Mail className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      id="forgotEmail"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className="focus:ring-[#1B4332] focus:border-[#1B4332] block w-full pl-10 sm:text-sm border-gray-300 rounded-xl py-3 border bg-gray-50/50"
+                      placeholder="admin@clinicavet.com"
+                    />
+                  </div>
+                </div>
+
+                <div className="text-sm">
+                  <button
+                    type="button"
+                    onClick={backToLogin}
+                    className="font-medium text-[#1B4332] hover:text-[#2a6b50] transition-colors"
+                  >
+                    ← Volver a iniciar sesión
+                  </button>
+                </div>
+
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <button
+                    type="submit"
+                    disabled={resetLoading}
+                    className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-[#1B4332] hover:bg-[#2a6b50] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1B4332] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {resetLoading ? 'Enviando...' : 'Enviar enlace de recuperación'}
+                  </button>
+                </motion.div>
+              </form>
+            )
+          ) : (
           <form className="space-y-6" onSubmit={handleAuth}>
             
             <AnimatePresence mode="wait">
@@ -228,7 +350,7 @@ export default function LoginPage() {
               </div>
             </motion.div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="text-sm">
                 <button
                   type="button"
@@ -241,6 +363,21 @@ export default function LoginPage() {
                   {isRegistering ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
                 </button>
               </div>
+              {!isRegistering && (
+                <div className="text-sm">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setView('forgot');
+                      setError(null);
+                      setForgotEmail(email);
+                    }}
+                    className="font-medium text-gray-500 hover:text-[#1B4332] transition-colors"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                </div>
+              )}
             </div>
 
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -254,6 +391,7 @@ export default function LoginPage() {
               </button>
             </motion.div>
           </form>
+          )}
         </motion.div>
       </div>
     </div>
