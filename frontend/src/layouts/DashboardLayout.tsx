@@ -12,7 +12,14 @@ export default function DashboardLayout() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const notificationRef = useRef<HTMLDivElement>(null);
+
+  const runGlobalSearch = () => {
+    const term = searchQuery.trim();
+    if (term.length < 2) return;
+    navigate(`/dashboard/search?q=${encodeURIComponent(term)}`);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -109,13 +116,21 @@ export default function DashboardLayout() {
               <Menu className="h-6 w-6" />
             </button>
             <div className="relative w-full max-w-md hidden sm:block">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div
+                className="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer"
+                onClick={runGlobalSearch}
+              >
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') runGlobalSearch();
+                }}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#1B4332] focus:border-[#1B4332] sm:text-sm transition-colors"
-                placeholder="Buscar paciente, cliente o cita..."
+                placeholder="Buscar paciente, cliente o teléfono... (Enter para buscar)"
               />
             </div>
           </div>

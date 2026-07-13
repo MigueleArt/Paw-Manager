@@ -43,3 +43,9 @@ export const petsApi = {
       body: JSON.stringify(note),
     }).then(handleResponse),
 };
+
+export const searchApi = {
+  search: (clinicId: string, q: string) =>
+    fetch(`${API_URL}/search?clinicId=${encodeURIComponent(clinicId)}&q=${encodeURIComponent(q)}`)
+      .then(handleResponse),
+};
