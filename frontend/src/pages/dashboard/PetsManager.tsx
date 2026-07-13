@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Eye, FileText, X, Trash2, Edit2, Send } from 'lucide-react';
+import { Search, Plus, Eye, FileText, X, Trash2, Send } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { petsApi } from '../../lib/api';
+import ClientPicker, { SelectedClient } from '../../components/ClientPicker';
 
 export default function PetsManager() {
   const { user, userData } = useAuth();
@@ -14,7 +15,9 @@ export default function PetsManager() {
   const [editingPet, setEditingPet] = useState<any>(null);
   const [activePet, setActivePet] = useState<any>(null);
 
-  const [newPet, setNewPet] = useState({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
+  const [newPet, setNewPet] = useState({ name: '', species: 'Perro', breed: '', age: '' });
+  const [selectedClient, setSelectedClient] = useState<SelectedClient | null>(null);
+
   const [newNote, setNewNote] = useState('');
   const [notes, setNotes] = useState<any[]>([]);
 
@@ -49,6 +52,11 @@ export default function PetsManager() {
     e.preventDefault();
     const activeClinicId = userData?.clinicId || 'clinica_por_defecto';
 
+    if (!selectedClient?.id) {
+      alert('Selecciona un cliente existente o crea uno nuevo antes de guardar el paciente.');
+      return;
+    }
+
     try {
       if (editingPet) {
         await petsApi.update(editingPet.id, {
@@ -56,17 +64,19 @@ export default function PetsManager() {
           species: newPet.species,
           breed: newPet.breed,
           age: newPet.age,
-          owner: newPet.owner,
+          clientId: selectedClient.id,
         });
       } else {
         await petsApi.create({
           ...newPet,
+          clientId: selectedClient.id,
           clinicId: activeClinicId,
         });
       }
       setShowModal(false);
       setEditingPet(null);
-      setNewPet({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
+      setNewPet({ name: '', species: 'Perro', breed: '', age: '' });
+      setSelectedClient(null);
       await fetchPets();
     } catch (error: any) {
       console.error('Error saving pet:', error);
@@ -76,13 +86,17 @@ export default function PetsManager() {
 
   const handleEditClick = (pet: any) => {
     setEditingPet(pet);
-    setNewPet({ name: pet.name, species: pet.species, breed: pet.breed, age: pet.age, owner: pet.owner });
+    setNewPet({ name: pet.name, species: pet.species, breed: pet.breed, age: pet.age });
+    setSelectedClient(
+      pet.clientId ? { id: pet.clientId, name: pet.owner, phone: pet.ownerPhone } : null
+    );
     setShowModal(true);
   };
 
   const openNewPetModal = () => {
     setEditingPet(null);
-    setNewPet({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
+    setNewPet({ name: '', species: 'Perro', breed: '', age: '' });
+    setSelectedClient(null);
     setShowModal(true);
   };
 
@@ -178,6 +192,12 @@ export default function PetsManager() {
                 <span className="text-gray-500">Dueño:</span>
                 <span className="font-medium text-gray-900">{pet.owner}</span>
               </div>
+              {pet.ownerPhone && (
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-500">Teléfono:</span>
+                  <span className="font-medium text-gray-900">{pet.ownerPhone}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Última visita:</span>
                 <span className="font-medium text-gray-900">{pet.lastVisit}</span>
@@ -220,12 +240,14 @@ export default function PetsManager() {
                 <option value="Exótico">Exótico</option>
               </select>
               <input required type="text" placeholder="Raza" value={newPet.breed} onChange={e => setNewPet({...newPet, breed: e.target.value})} className="w-full border p-3 rounded-xl bg-gray-50" />
-              <div className="flex space-x-4">
-                <div className="flex-1">
-                  <input required type="number" min="0" max="50" placeholder="Edad (años)" value={newPet.age} onChange={e => setNewPet({...newPet, age: e.target.value})} className="w-full border p-3 rounded-xl bg-gray-50" />
-                </div>
-              </div>
-              <input required type="text" placeholder="Nombre del Dueño" value={newPet.owner} onChange={e => setNewPet({...newPet, owner: e.target.value})} className="w-full border p-3 rounded-xl bg-gray-50" />
+              <input required type="number" min="0" max="50" placeholder="Edad (años)" value={newPet.age} onChange={e => setNewPet({...newPet, age: e.target.value})} className="w-full border p-3 rounded-xl bg-gray-50" />
+
+              <ClientPicker
+                clinicId={userData?.clinicId || ''}
+                value={selectedClient}
+                onChange={setSelectedClient}
+              />
+
               <button type="submit" className="w-full bg-[#1B4332] text-white p-3 rounded-xl font-bold mt-2 hover:bg-[#2a6b50] transition-colors">
                 {editingPet ? 'Guardar Cambios' : 'Registrar Paciente'}
               </button>
