@@ -25,7 +25,7 @@ export const getPets = async (req: Request, res: Response) => {
 // POST /api/pets
 export const createPet = async (req: Request, res: Response) => {
   try {
-    const { name, species, breed, age, owner, clinicId } = req.body;
+    const { name, species, breed, age, owner, ownerPhone, clinicId } = req.body;
 
     if (!name || !species || !breed || !age || !owner) {
       return res.status(400).json({ message: 'Faltan campos obligatorios' });
@@ -37,6 +37,7 @@ export const createPet = async (req: Request, res: Response) => {
       breed,
       age,
       owner,
+      ownerPhone: ownerPhone || '',
       clinicId: clinicId || 'clinica_por_defecto',
       lastVisit: new Date().toLocaleDateString('es-ES'),
     };
@@ -53,7 +54,7 @@ export const createPet = async (req: Request, res: Response) => {
 export const updatePet = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, species, breed, age, owner } = req.body;
+    const { name, species, breed, age, owner, ownerPhone } = req.body;
 
     const petRef = petsCollection.doc(id);
     const doc = await petRef.get();
@@ -62,7 +63,7 @@ export const updatePet = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Paciente no encontrado' });
     }
 
-    const updatedData = { name, species, breed, age, owner };
+    const updatedData = { name, species, breed, age, owner, ownerPhone: ownerPhone || '' };
     await petRef.update(updatedData);
 
     res.status(200).json({ id, ...doc.data(), ...updatedData });
