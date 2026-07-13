@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { db } from '../config/firebase';
 
 const petsCollection = db.collection('pets');
+const clientsCollection = db.collection('clients');
 
 // GET /api/pets?clinicId=xxxx
 export const getPets = async (req: Request, res: Response) => {
@@ -23,21 +24,32 @@ export const getPets = async (req: Request, res: Response) => {
 };
 
 // POST /api/pets
+// Ahora requiere clientId (el paciente se vincula a un Cliente ya existente, no a texto libre).
 export const createPet = async (req: Request, res: Response) => {
   try {
-    const { name, species, breed, age, owner, clinicId } = req.body;
+    const { name, species, breed, age, clientId, clinicId } = req.body;
 
-    if (!name || !species || !breed || !age || !owner) {
-      return res.status(400).json({ message: 'Faltan campos obligatorios' });
+    if (!name || !species || !breed || !age || !clientId) {
+      return res.status(400).json({ message: 'Faltan campos obligatorios (incluyendo clientId)' });
     }
+
+    const clientDoc = await clientsCollection.doc(clientId).get();
+    if (!clientDoc.exists) {
+      return res.status(404).json({ message: 'El cliente indicado no existe' });
+    }
+    const clientData = clientDoc.data() as any;
 
     const newPet = {
       name,
       species,
       breed,
       age,
-      owner,
-      clinicId: clinicId || 'clinica_por_defecto',
+      clientId,
+      // Campos denormalizados para no tener que hacer un join en cada lista de pacientes.
+      // La fuente de verdad sigue siendo la colección "clients".
+      owner: clientData.name,
+      ownerPhone: clientData.phone || '',
+      clinicId: clinicId || clientData.clinicId || 'clinica_por_defecto',
       lastVisit: new Date().toLocaleDateString('es-ES'),
     };
 
@@ -53,7 +65,7 @@ export const createPet = async (req: Request, res: Response) => {
 export const updatePet = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, species, breed, age, owner } = req.body;
+    const { name, species, breed, age, clientId } = req.body;
 
     const petRef = petsCollection.doc(id);
     const doc = await petRef.get();
@@ -62,7 +74,20 @@ export const updatePet = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Paciente no encontrado' });
     }
 
-    const updatedData = { name, species, breed, age, owner };
+    const updatedData: any = { name, species, breed, age };
+
+    // Si se está reasignando el paciente a otro cliente, refrescamos los campos denormalizados.
+    if (clientId) {
+      const clientDoc = await clientsCollection.doc(clientId).get();
+      if (!clientDoc.exists) {
+        return res.status(404).json({ message: 'El cliente indicado no existe' });
+      }
+      const clientData = clientDoc.data() as any;
+      updatedData.clientId = clientId;
+      updatedData.owner = clientData.name;
+      updatedData.ownerPhone = clientData.phone || '';
+    }
+
     await petRef.update(updatedData);
 
     res.status(200).json({ id, ...doc.data(), ...updatedData });
