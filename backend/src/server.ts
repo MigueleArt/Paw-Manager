@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import petsRoutes from './routes/pets.routes';
+import searchRoutes from './routes/search.routes';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/pets', petsRoutes);
+app.use('/api/search', searchRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
