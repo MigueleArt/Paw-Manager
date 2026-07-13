@@ -43,3 +43,32 @@ export const petsApi = {
       body: JSON.stringify(note),
     }).then(handleResponse),
 };
+
+export const clientsApi = {
+  search: (clinicId: string, q: string = '') =>
+    fetch(`${API_URL}/clients?clinicId=${encodeURIComponent(clinicId)}&q=${encodeURIComponent(q)}`)
+      .then(handleResponse),
+
+  create: (client: Record<string, any>) =>
+    fetch(`${API_URL}/clients`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(client),
+    }).then(handleResponse),
+
+  update: (id: string, client: Record<string, any>) =>
+    fetch(`${API_URL}/clients/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(client),
+    }).then(handleResponse),
+
+  remove: (id: string) =>
+    fetch(`${API_URL}/clients/${id}`, { method: 'DELETE' }).then(handleResponse),
+};
+
+export const searchApi = {
+  search: (clinicId: string, q: string) =>
+    fetch(`${API_URL}/search?clinicId=${encodeURIComponent(clinicId)}&q=${encodeURIComponent(q)}`)
+      .then(handleResponse),
+};
