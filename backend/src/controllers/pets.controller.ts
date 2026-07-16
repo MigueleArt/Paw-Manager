@@ -1,7 +1,15 @@
-import { Request, Response } from 'express';
+﻿import { Request, Response } from 'express';
 import { db } from '../config/firebase';
 
 const petsCollection = db.collection('pets');
+
+const getParamId = (idParam: string | string[] | undefined) => {
+  if (Array.isArray(idParam)) {
+    return idParam[0];
+  }
+
+  return idParam;
+};
 
 // GET /api/pets?clinicId=xxxx
 export const getPets = async (req: Request, res: Response) => {
@@ -52,7 +60,13 @@ export const createPet = async (req: Request, res: Response) => {
 // PUT /api/pets/:id
 export const updatePet = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = getParamId(req.params.id);
+
+    if (!id || !id.trim()) {
+      return res.status(400).json({
+        message: 'Identificador de paciente inválido'
+      });
+    }
     const { name, species, breed, age, owner } = req.body;
 
     const petRef = petsCollection.doc(id);
@@ -75,7 +89,13 @@ export const updatePet = async (req: Request, res: Response) => {
 // DELETE /api/pets/:id
 export const deletePet = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = getParamId(req.params.id);
+
+    if (!id || !id.trim()) {
+      return res.status(400).json({
+        message: 'Identificador de paciente inválido'
+      });
+    }
     const petRef = petsCollection.doc(id);
     const doc = await petRef.get();
 
@@ -94,7 +114,13 @@ export const deletePet = async (req: Request, res: Response) => {
 // GET /api/pets/:id/notes  (historial clínico)
 export const getPetNotes = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = getParamId(req.params.id);
+
+    if (!id || !id.trim()) {
+      return res.status(400).json({
+        message: 'Identificador de paciente inválido'
+      });
+    }
     const notesSnapshot = await petsCollection
       .doc(id)
       .collection('notes')
@@ -112,7 +138,13 @@ export const getPetNotes = async (req: Request, res: Response) => {
 // POST /api/pets/:id/notes
 export const addPetNote = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = getParamId(req.params.id);
+
+    if (!id || !id.trim()) {
+      return res.status(400).json({
+        message: 'Identificador de paciente inválido'
+      });
+    }
     const { text, doctor, clinicId } = req.body;
 
     if (!text || !text.trim()) {
