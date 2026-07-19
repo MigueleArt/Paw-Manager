@@ -1,45 +1,97 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
+import { db } from './firebase';
 
-async function handleResponse(res: Response) {
-  if (!res.ok) {
-    const errorBody = await res.json().catch(() => ({}));
-    throw new Error(errorBody.message || `Error ${res.status}`);
-  }
-  return res.json();
+function cleanData(data: Record<string, any>) {
+  return Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined)
+  );
 }
 
 export const petsApi = {
-  getAll: (clinicId?: string) => {
-    const url = clinicId
-      ? `${API_URL}/pets?clinicId=${encodeURIComponent(clinicId)}`
-      : `${API_URL}/pets`;
-    return fetch(url).then(handleResponse);
+  getAll: async (clinicId?: string) => {
+    const petsRef = collection(db, 'pets');
+
+    const q = clinicId
+      ? query(petsRef, where('clinicId', '==', clinicId))
+      : petsRef;
+
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map((petDoc) => ({
+      id: petDoc.id,
+      ...petDoc.data(),
+    }));
   },
 
-  create: (pet: Record<string, any>) =>
-    fetch(`${API_URL}/pets`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(pet),
-    }).then(handleResponse),
+  create: async (pet: Record<string, any>) => {
+    const data = cleanData({
+      ...pet,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
 
-  update: (id: string, pet: Record<string, any>) =>
-    fetch(`${API_URL}/pets/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(pet),
-    }).then(handleResponse),
+    const docRef = await addDoc(collection(db, 'pets'), data);
 
-  remove: (id: string) =>
-    fetch(`${API_URL}/pets/${id}`, { method: 'DELETE' }).then(handleResponse),
+    return {
+      id: docRef.id,
+      ...pet,
+    };
+  },
 
-  getNotes: (petId: string) =>
-    fetch(`${API_URL}/pets/${petId}/notes`).then(handleResponse),
+  update: async (id: string, pet: Record<string, any>) => {
+    const data = cleanData({
+      ...pet,
+      updatedAt: serverTimestamp(),
+    });
 
-  addNote: (petId: string, note: Record<string, any>) =>
-    fetch(`${API_URL}/pets/${petId}/notes`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(note),
-    }).then(handleResponse),
+    await updateDoc(doc(db, 'pets', id), data);
+
+    return {
+      id,
+      ...pet,
+    };
+  },
+
+  remove: async (id: string) => {
+    await deleteDoc(doc(db, 'pets', id));
+
+    return {
+      id,
+      deleted: true,
+    };
+  },
+
+  getNotes: async (petId: string) => {
+    const notesRef = collection(db, 'pets', petId, 'notes');
+    const snapshot = await getDocs(notesRef);
+
+    return snapshot.docs.map((noteDoc) => ({
+      id: noteDoc.id,
+      ...noteDoc.data(),
+    }));
+  },
+
+  addNote: async (petId: string, note: Record<string, any>) => {
+    const data = cleanData({
+      ...note,
+      createdAt: serverTimestamp(),
+    });
+
+    const docRef = await addDoc(collection(db, 'pets', petId, 'notes'), data);
+
+    return {
+      id: docRef.id,
+      ...note,
+    };
+  },
 };
