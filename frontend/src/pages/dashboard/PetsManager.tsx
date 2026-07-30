@@ -14,7 +14,14 @@ export default function PetsManager() {
   const [editingPet, setEditingPet] = useState<any>(null);
   const [activePet, setActivePet] = useState<any>(null);
 
-  const [newPet, setNewPet] = useState({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
+  const [newPet, setNewPet] = useState({
+  name: '',
+  species: 'Perro',
+  breed: '',
+  age: '',
+  owner: '',
+  ownerEmail: '',
+});
   const [newNote, setNewNote] = useState('');
   const [notes, setNotes] = useState<any[]>([]);
 
@@ -57,6 +64,7 @@ export default function PetsManager() {
           breed: newPet.breed,
           age: newPet.age,
           owner: newPet.owner,
+          ownerEmail: newPet.ownerEmail,
         });
       } else {
         await petsApi.create({
@@ -66,7 +74,7 @@ export default function PetsManager() {
       }
       setShowModal(false);
       setEditingPet(null);
-      setNewPet({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
+      setNewPet({ name: '', species: 'Perro', breed: '', age: '', owner: '', ownerEmail: '' });
       await fetchPets();
     } catch (error: any) {
       console.error('Error saving pet:', error);
@@ -76,13 +84,27 @@ export default function PetsManager() {
 
   const handleEditClick = (pet: any) => {
     setEditingPet(pet);
-    setNewPet({ name: pet.name, species: pet.species, breed: pet.breed, age: pet.age, owner: pet.owner });
+    setNewPet({
+  name: pet.name || '',
+  species: pet.species || 'Perro',
+  breed: pet.breed || '',
+  age: pet.age || '',
+  owner: pet.owner || '',
+  ownerEmail: pet.ownerEmail || '',
+});
     setShowModal(true);
   };
 
   const openNewPetModal = () => {
     setEditingPet(null);
-    setNewPet({ name: '', species: 'Perro', breed: '', age: '', owner: '' });
+    setNewPet({
+  name: '',
+  species: 'Perro',
+  breed: '',
+  age: '',
+  owner: '',
+  ownerEmail: '',
+});
     setShowModal(true);
   };
 
@@ -225,7 +247,13 @@ export default function PetsManager() {
                   <input required type="number" min="0" max="50" placeholder="Edad (años)" value={newPet.age} onChange={e => setNewPet({...newPet, age: e.target.value})} className="w-full border p-3 rounded-xl bg-gray-50" />
                 </div>
               </div>
-              <input required type="text" placeholder="Nombre del Dueño" value={newPet.owner} onChange={e => setNewPet({...newPet, owner: e.target.value})} className="w-full border p-3 rounded-xl bg-gray-50" />
+              <input required
+                type="email"
+                placeholder="Correo del Dueño"
+                value={newPet.ownerEmail}
+                onChange={e => setNewPet({ ...newPet, ownerEmail: e.target.value })}
+                className="w-full border p-3 rounded-xl bg-gray-50"
+                />
               <button type="submit" className="w-full bg-[#1B4332] text-white p-3 rounded-xl font-bold mt-2 hover:bg-[#2a6b50] transition-colors">
                 {editingPet ? 'Guardar Cambios' : 'Registrar Paciente'}
               </button>
