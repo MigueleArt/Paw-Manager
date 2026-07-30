@@ -9,6 +9,7 @@ import DashboardHome from "./pages/dashboard/DashboardHome";
 import RolesManager from "./pages/dashboard/RolesManager";
 import PetsManager from "./pages/dashboard/PetsManager";
 import AppointmentsManager from "./pages/dashboard/AppointmentsManager";
+import ClientsManager from "./pages/dashboard/ClientsManager";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
@@ -30,6 +31,7 @@ export default function App() {
             <Route index element={<DashboardHome />} />
             <Route path="roles" element={<RolesManager />} />
             <Route path="pets" element={<PetsManager />} />
+            <Route path="clients" element={<ClientsManager />} />
             <Route path="appointments" element={<AppointmentsManager />} />
           </Route>
           
