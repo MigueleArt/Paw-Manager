@@ -6,6 +6,11 @@ import {
   CheckCircle2,
   XCircle,
   X,
+  CheckCircle,
+  Pencil,
+  Trash2,
+  History,
+  Info,
   ChevronLeft,
   ChevronRight,
   List as ListIcon,
@@ -17,7 +22,7 @@ import {
   Check,
   Users,
 } from 'lucide-react';
-import { collection, onSnapshot, addDoc, updateDoc, doc, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, where, arrayUnion } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -89,17 +94,24 @@ const getWeekDays = (monday: Date) =>
 
 const HOURS = Array.from({ length: END_HOUR - START_HOUR }, (_, i) => START_HOUR + i);
 
+type ApptStatus = 'Pendiente' | 'Confirmada' | 'Cancelada' | 'Completada';
+
+interface HistoryEntry {
+  text: string;
+  timestamp: string;
+}
+
 export default function AppointmentsManager() {
   const { userData } = useAuth();
   const [appointments, setAppointments] = useState<any[]>([]);
-  const [pendingCount, setPendingCount] = useState(0);
-const [completedCount, setCompletedCount] = useState(0);
-const [currentDate, setCurrentDate] = useState('');
   const [roles, setRoles] = useState<any[]>([]);
   const [pets, setPets] = useState<any[]>([]);
 
   const [showModal, setShowModal] = useState(false);
   const [viewAppt, setViewAppt] = useState<any>(null);
+  const [editingAppt, setEditingAppt] = useState<any>(null);
+  const [savingEdit, setSavingEdit] = useState(false);
+
   const [newAppt, setNewAppt] = useState({
     date: new Date().toISOString().split('T')[0],
     time: '09:00',
@@ -108,6 +120,14 @@ const [currentDate, setCurrentDate] = useState('');
     type: 'Consulta General',
     doctor: '',
     reason: '',
+  });
+
+  const [editForm, setEditForm] = useState({
+    date: '',
+    time: '',
+    doctor: '',
+    reason: '',
+    status: 'Pendiente' as ApptStatus,
   });
 
   // Calendar view state
@@ -136,7 +156,6 @@ const [currentDate, setCurrentDate] = useState('');
   useEffect(() => {
     if (!userData?.clinicId) return;
     const clinicId = userData.clinicId;
-    setCurrentDate(new Date().toLocaleString());
 
     const unsubscribeAppts = onSnapshot(query(collection(db, 'appointments'), where('clinicId', '==', clinicId)), (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -146,6 +165,13 @@ const [currentDate, setCurrentDate] = useState('');
         return dateA.getTime() - dateB.getTime();
       });
       setAppointments(data);
+
+      // Si el modal de edición está abierto, refresca su copia con los datos más recientes
+      setEditingAppt((prev: any) => {
+        if (!prev) return prev;
+        const updated = data.find((a: any) => a.id === prev.id);
+        return updated || prev;
+      });
     });
 
     const unsubscribeRoles = onSnapshot(query(collection(db, 'roles'), where('clinicId', '==', clinicId)), (snapshot) => {
@@ -198,11 +224,14 @@ const [currentDate, setCurrentDate] = useState('');
         finalPetId = newPetRef.id;
       }
 
+      const now = new Date().toISOString();
       await addDoc(collection(db, 'appointments'), {
         ...newAppt,
         petId: finalPetId,
         clinicId: activeClinicId,
-        status: 'Pendiente'
+        status: 'Pendiente',
+        createdAt: now,
+        history: [{ text: 'Cita creada por recepción', timestamp: now }],
       });
       setShowModal(false);
       setNewAppt({
@@ -224,7 +253,18 @@ const [currentDate, setCurrentDate] = useState('');
 
   const updateStatus = async (id: string, status: string) => {
     try {
-      await updateDoc(doc(db, 'appointments', id), { status });
+      const appt = appointments.find(a => a.id === id);
+      await updateDoc(doc(db, 'appointments', id), {
+        status,
+        ...(appt
+          ? {
+              history: arrayUnion({
+                text: `Estado cambiado de ${appt.status} a ${status}`,
+                timestamp: new Date().toISOString(),
+              }),
+            }
+          : {}),
+      });
     } catch (error) {
       console.error("Error updating status", error);
     }
@@ -312,6 +352,145 @@ const [currentDate, setCurrentDate] = useState('');
       if (next.has(type)) next.delete(type); else next.add(type);
       return next;
     });
+  };
+
+
+  const formatHistoryTimestamp = (iso: string) => {
+    try {
+      return new Date(iso).toLocaleString('es-ES', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return iso;
+    }
+  };
+
+  const statusBadgeClasses = (status: string) => {
+    switch (status) {
+      case 'Completada':
+        return 'bg-green-100 text-green-800';
+      case 'Cancelada':
+        return 'bg-red-100 text-red-800';
+      case 'Confirmada':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-yellow-100 text-yellow-800';
+    }
+  };
+
+  const getPetOwner = (petId: string) => {
+    const pet = pets.find(p => p.id === petId);
+    return pet?.owner || 'Sin registrar';
+  };
+
+  const getPetSpeciesEmoji = (petId: string) => {
+    const pet = pets.find(p => p.id === petId);
+    if (pet?.species === 'Perro') return '🐕';
+    if (pet?.species === 'Gato') return '🐈';
+    return '🐾';
+  };
+
+  const openEditModal = (apt: any) => {
+    setEditingAppt(apt);
+    setEditForm({
+      date: apt.date,
+      time: apt.time,
+      doctor: apt.doctor,
+      reason: apt.reason || '',
+      status: apt.status,
+    });
+  };
+
+  const closeEditModal = () => {
+    setEditingAppt(null);
+  };
+
+  const buildDiffEntries = (original: any, updated: typeof editForm): HistoryEntry[] => {
+    const entries: HistoryEntry[] = [];
+    const now = new Date().toISOString();
+
+    if (original.date !== updated.date || original.time !== updated.time) {
+      entries.push({
+        text: `Hora modificada de ${original.time} a ${updated.time}${
+          original.date !== updated.date ? ` (fecha: ${updated.date})` : ''
+        }`,
+        timestamp: now,
+      });
+    }
+    if (original.doctor !== updated.doctor) {
+      entries.push({ text: `Veterinario reasignado de ${original.doctor} a ${updated.doctor}`, timestamp: now });
+    }
+    if ((original.reason || '') !== (updated.reason || '')) {
+      entries.push({ text: 'Motivo de consulta actualizado', timestamp: now });
+    }
+    if (original.status !== updated.status) {
+      entries.push({ text: `Estado cambiado de ${original.status} a ${updated.status}`, timestamp: now });
+    }
+    return entries;
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAppt) return;
+    setSavingEdit(true);
+    try {
+      const diffEntries = buildDiffEntries(editingAppt, editForm);
+      await updateDoc(doc(db, 'appointments', editingAppt.id), {
+        date: editForm.date,
+        time: editForm.time,
+        doctor: editForm.doctor,
+        reason: editForm.reason,
+        status: editForm.status,
+        ...(diffEntries.length > 0 ? { history: arrayUnion(...diffEntries) } : {}),
+      });
+      closeEditModal();
+    } catch (error: any) {
+      console.error('Error al actualizar cita:', error);
+      alert(`Error al guardar cambios: ${error.message}`);
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
+  const handleReprogram = async () => {
+    if (!editingAppt) return;
+    setSavingEdit(true);
+    try {
+      const entries: HistoryEntry[] = [];
+      if (editingAppt.date !== editForm.date || editingAppt.time !== editForm.time) {
+        entries.push({
+          text: `Hora modificada de ${editingAppt.time} a ${editForm.time}${
+            editingAppt.date !== editForm.date ? ` (fecha: ${editForm.date})` : ''
+          }`,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      await updateDoc(doc(db, 'appointments', editingAppt.id), {
+        date: editForm.date,
+        time: editForm.time,
+        ...(entries.length > 0 ? { history: arrayUnion(...entries) } : {}),
+      });
+      closeEditModal();
+    } catch (error: any) {
+      console.error('Error al reprogramar cita:', error);
+      alert(`Error al reprogramar: ${error.message}`);
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
+  const handleDeleteAppt = async () => {
+    if (!editingAppt) return;
+    if (!window.confirm('¿Estás seguro de eliminar esta cita? Esta acción no se puede deshacer.')) return;
+    try {
+      await deleteDoc(doc(db, 'appointments', editingAppt.id));
+      closeEditModal();
+    } catch (error) {
+      console.error('Error al eliminar cita:', error);
+    }
   };
 
   return (
@@ -619,6 +798,14 @@ const [currentDate, setCurrentDate] = useState('');
 
                     {(apt.status === 'Pendiente' || apt.status === 'Confirmada') && (
                       <div className="flex space-x-2">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); openEditModal(apt); }}
+                          className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors border border-transparent hover:border-gray-200"
+                          title="Editar cita"
+                        >
+                          <Pencil className="h-5 w-5" />
+                        </button>
+
                         {apt.status === 'Pendiente' && (
                           <button
                             onClick={(e) => { e.stopPropagation(); updateStatus(apt.id, 'Confirmada'); }}
@@ -652,6 +839,7 @@ const [currentDate, setCurrentDate] = useState('');
         </div>
       )}
 
+      {/* New Appointment Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
@@ -811,10 +999,188 @@ const [currentDate, setCurrentDate] = useState('');
             </div>
 
             <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => { setViewAppt(null); openEditModal(viewAppt); }}
+                className="flex-1 bg-[#1B4332] hover:bg-[#2a6b50] text-white p-3 rounded-xl font-bold transition-colors flex items-center justify-center"
+              >
+                <Pencil className="h-4 w-4 mr-2" />
+                Editar Cita
+              </button>
               <button onClick={() => setViewAppt(null)} className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 p-3 rounded-xl font-bold transition-colors">
                 Cerrar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Appointment Modal */}
+      {editingAppt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl max-h-[92vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-start sticky top-0 bg-white z-10">
+              <div>
+                <h2 className="text-xl font-bold text-[#1B4332]">Editar Cita</h2>
+                <p className="text-sm text-gray-500 mt-1">Gestión de cita existente programada</p>
+              </div>
+              <button onClick={closeEditModal} className="text-gray-500 hover:text-gray-800 bg-gray-100 p-2 rounded-full">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="p-6 space-y-5 text-sm">
+              {/* Pet + owner card */}
+              <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="h-12 w-12 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-2xl">
+                    {getPetSpeciesEmoji(editingAppt.petId)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">{editingAppt.petName}</p>
+                    <p className="text-xs text-gray-500">{editingAppt.type}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] text-gray-400 uppercase font-bold">Propietario</p>
+                  <p className="font-semibold text-gray-800 text-sm">{getPetOwner(editingAppt.petId)}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Fecha de Cita</label>
+                  <input
+                    required
+                    type="date"
+                    value={editForm.date}
+                    onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
+                    className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#1B4332] outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Hora</label>
+                  <input
+                    required
+                    type="time"
+                    value={editForm.time}
+                    onChange={(e) => setEditForm({ ...editForm, time: e.target.value })}
+                    className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#1B4332] outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Veterinario Asignado</label>
+                  <select
+                    required
+                    value={editForm.doctor}
+                    onChange={(e) => setEditForm({ ...editForm, doctor: e.target.value })}
+                    className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#1B4332] outline-none bg-white"
+                  >
+                    <option value="">Selecciona...</option>
+                    {roles.map((r) => (
+                      <option key={r.id} value={r.name}>{r.name} ({r.role})</option>
+                    ))}
+                    {editForm.doctor && !roles.some((r) => r.name === editForm.doctor) && (
+                      <option value={editForm.doctor}>{editForm.doctor}</option>
+                    )}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Motivo de Consulta</label>
+                  <input
+                    type="text"
+                    value={editForm.reason}
+                    onChange={(e) => setEditForm({ ...editForm, reason: e.target.value })}
+                    className="w-full border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-[#1B4332] outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Estado de la Cita</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {([
+                    { value: 'Pendiente', icon: Clock },
+                    { value: 'Confirmada', icon: CheckCircle },
+                    { value: 'Cancelada', icon: XCircle },
+                    { value: 'Completada', icon: CheckCircle2 },
+                  ] as { value: ApptStatus; icon: any }[]).map(({ value, icon: Icon }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setEditForm({ ...editForm, status: value })}
+                      className={`flex flex-col items-center justify-center py-3 rounded-xl border-2 text-xs font-semibold transition-colors ${
+                        editForm.status === value
+                          ? 'border-[#E9C46A] bg-[#FEF6E4] text-[#8a6d1d]'
+                          : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <Icon className="h-5 w-5 mb-1" />
+                      {value}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-[#FEF6E4] border border-[#F3E1B3] rounded-xl p-3 flex items-start space-x-2">
+                <Info className="h-4 w-4 text-[#8a6d1d] mt-0.5 shrink-0" />
+                <p className="text-xs text-[#7a5d15]">
+                  Al reprogramar, se conservarán los datos del paciente y solo se actualizará la fecha u hora.
+                </p>
+              </div>
+
+              {(editingAppt.history?.length ?? 0) > 0 && (
+                <div>
+                  <div className="flex items-center text-xs font-bold text-gray-700 uppercase mb-2">
+                    <History className="h-4 w-4 mr-1" />
+                    Historial de cambios
+                  </div>
+                  <div className="space-y-3 max-h-32 overflow-y-auto pr-1">
+                    {[...editingAppt.history]
+                      .sort((a: HistoryEntry, b: HistoryEntry) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+                      .map((entry: HistoryEntry, idx: number) => (
+                        <div key={idx} className="flex space-x-3">
+                          <div className="h-2 w-2 rounded-full bg-[#2D6A4F] mt-1.5 shrink-0" />
+                          <div>
+                            <p className="text-sm text-gray-800">{entry.text}</p>
+                            <p className="text-xs text-gray-400">{formatHistoryTimestamp(entry.timestamp)}</p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-2 border-t border-gray-100 gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={handleDeleteAppt}
+                  className="flex items-center text-red-600 hover:text-red-700 text-sm font-semibold"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Eliminar Cita
+                </button>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleReprogram}
+                    disabled={savingEdit}
+                    className="border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  >
+                    Reprogramar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={savingEdit}
+                    className="bg-[#1B4332] hover:bg-[#2a6b50] text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-colors disabled:opacity-60"
+                  >
+                    {savingEdit ? 'Guardando...' : 'Guardar cambios'}
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       )}
