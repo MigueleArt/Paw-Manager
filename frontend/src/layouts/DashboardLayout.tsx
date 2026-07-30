@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Dog, Calendar, LogOut, PawPrint, Bell, Search, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Dog, Calendar, LogOut, PawPrint, Bell, Search, Menu, X, Contact } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
@@ -37,6 +37,7 @@ export default function DashboardLayout() {
     { name: 'Inicio', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Citas', href: '/dashboard/appointments', icon: Calendar },
     { name: 'Pacientes', href: '/dashboard/pets', icon: Dog },
+    { name: 'Clientes', href: '/dashboard/clients', icon: Contact },
     { name: 'Personal (Roles)', href: '/dashboard/roles', icon: Users },
   ];
 
