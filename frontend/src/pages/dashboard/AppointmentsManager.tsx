@@ -206,18 +206,24 @@ export default function AppointmentsManager() {
     }
 
     try {
-      let finalPetId = newAppt.petId;
-      const existingPet = pets.find(p => p.name.toLowerCase() === newAppt.petName.toLowerCase());
+  let finalPetId = newAppt.petId;
+  let ownerName = 'Completar en perfil';
+  let ownerEmail = '';
 
-      if (existingPet) {
-        finalPetId = existingPet.id;
-      } else {
+  const existingPet = pets.find(p => p.name.toLowerCase() === newAppt.petName.toLowerCase());
+
+  if (existingPet) {
+    finalPetId = existingPet.id;
+    ownerName = existingPet.owner || 'Sin registrar';
+    ownerEmail = existingPet.ownerEmail || '';
+  } else {
         const newPetRef = await addDoc(collection(db, 'pets'), {
           name: newAppt.petName,
           species: 'No especificado',
           breed: 'No especificado',
           age: 'No especificada',
           owner: 'Completar en perfil',
+          ownerEmail: '',
           clinicId: activeClinicId,
           lastVisit: new Date().toLocaleDateString('es-ES')
         });
@@ -226,10 +232,15 @@ export default function AppointmentsManager() {
 
       const now = new Date().toISOString();
       await addDoc(collection(db, 'appointments'), {
-        ...newAppt,
+      ...newAppt,
         petId: finalPetId,
+        ownerName,
+        ownerEmail,
         clinicId: activeClinicId,
         status: 'Pendiente',
+        reminderSent: false,
+        reminderStatus: ownerEmail ? 'pending' : 'missing_email',
+        reminderSentAt: null,
         createdAt: now,
         history: [{ text: 'Cita creada por recepción', timestamp: now }],
       });

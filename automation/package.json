@@ -1,0 +1,17 @@
+{
+  "name": "pawmanager-reminders-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automation script for PawManager appointment reminders",
+  "main": "sendAppointmentReminders.js",
+  "scripts": {
+    "send:reminders": "node sendAppointmentReminders.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.10.0",
+    "nodemailer": "^9.0.3"
+  }
+}
