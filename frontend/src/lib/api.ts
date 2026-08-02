@@ -9,7 +9,8 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { getDownloadURL, ref, uploadBytes, deleteObject } from 'firebase/storage';
+import { db, storage } from './firebase';
 
 function cleanData(data: Record<string, any>) {
   return Object.fromEntries(
@@ -94,11 +95,52 @@ export const petsApi = {
       ...note,
     };
   },
+
+  getAttachments: async (petId: string) => {
+    const attachmentsRef = collection(db, 'pets', petId, 'attachments');
+    const snapshot = await getDocs(attachmentsRef);
+
+    return snapshot.docs
+      .map((attDoc) => ({ id: attDoc.id, ...attDoc.data() }))
+      .sort((a: any, b: any) => (b.uploadedAt?.seconds || 0) - (a.uploadedAt?.seconds || 0));
+  },
+
+  addAttachment: async (petId: string, file: File, uploadedBy: string) => {
+    const path = `pets/${petId}/attachments/${Date.now()}_${file.name}`;
+    const storageRef = ref(storage, path);
+
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+
+    const data = {
+      name: file.name,
+      url,
+      path,
+      type: file.type,
+      size: file.size,
+      uploadedBy,
+      uploadedAt: serverTimestamp(),
+    };
+
+    const docRef = await addDoc(collection(db, 'pets', petId, 'attachments'), data);
+    return { id: docRef.id, ...data };
+  },
+
+  removeAttachment: async (petId: string, attachmentId: string, path: string) => {
+    try {
+      await deleteObject(ref(storage, path));
+    } catch (error) {
+      console.warn('El archivo ya no existe en Storage, se elimina solo el registro:', error);
+    }
+
+    await deleteDoc(doc(db, 'pets', petId, 'attachments', attachmentId));
+    return { id: attachmentId, deleted: true };
+  },
 };
 
 export const clientsApi = {
   getAll: async (clinicId?: string) => {
-    const clientsRef = collection(db, 'clients');
+    const clientsRef = collection(db, 'clients'); 
 
     const q = clinicId
       ? query(clientsRef, where('clinicId', '==', clinicId))

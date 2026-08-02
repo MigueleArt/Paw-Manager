@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Eye, FileText, X, Trash2, Edit2, Send } from 'lucide-react';
+import { Search, Plus, Eye, FileText, X, Trash2, Edit2, Send, Upload, Paperclip, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { petsApi } from '../../lib/api';
 
@@ -24,6 +24,12 @@ export default function PetsManager() {
 });
   const [newNote, setNewNote] = useState('');
   const [notes, setNotes] = useState<any[]>([]);
+  const [attachments, setAttachments] = useState<any[]>([]);
+  const [uploadError, setUploadError] = useState('');
+  const [uploading, setUploading] = useState(false);
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+  const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
 
   const fetchPets = async () => {
     if (!userData?.clinicId) return;
@@ -51,6 +57,57 @@ export default function PetsManager() {
       console.error('Error al obtener historial:', error);
     }
   };
+
+  const fetchAttachments = async (petId: string) => {
+  try {
+    const data = await petsApi.getAttachments(petId);
+    setAttachments(data);
+  } catch (error) {
+    console.error('Error al obtener archivos:', error);
+  }
+};
+
+const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  e.target.value = '';
+
+  if (!file || !activePet) return;
+  setUploadError('');
+
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    setUploadError('Tipo de archivo no permitido. Solo se aceptan PDF, JPG o PNG.');
+    return;
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    setUploadError('El archivo pesa demasiado. El límite es de 5MB.');
+    return;
+  }
+
+  try {
+    setUploading(true);
+    const uploadedBy = userData?.name || user?.email?.split('@')[0] || 'Admin';
+    await petsApi.addAttachment(activePet.id, file, uploadedBy);
+    await fetchAttachments(activePet.id);
+  } catch (error) {
+    console.error('Error al subir archivo:', error);
+    setUploadError('Ocurrió un error al subir el archivo. Intenta de nuevo.');
+  } finally {
+    setUploading(false);
+  }
+};
+
+const handleDeleteAttachment = async (attachment: any) => {
+  if (!activePet) return;
+  if (!window.confirm(`¿Eliminar "${attachment.name}"?`)) return;
+
+  try {
+    await petsApi.removeAttachment(activePet.id, attachment.id, attachment.path);
+    await fetchAttachments(activePet.id);
+  } catch (error) {
+    console.error('Error al eliminar archivo:', error);
+    setUploadError('No se pudo eliminar el archivo. Intenta de nuevo.');
+  }
+};
 
   const handleSavePet = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,10 +194,12 @@ export default function PetsManager() {
   };
 
   const openHistory = (pet: any) => {
-    setActivePet(pet);
-    setShowHistoryModal(true);
-    fetchNotes(pet.id);
-  };
+  setActivePet(pet);
+  setShowHistoryModal(true);
+  setUploadError('');
+  fetchNotes(pet.id);
+  fetchAttachments(pet.id);
+};  
 
   return (
     <div>
@@ -275,6 +334,68 @@ export default function PetsManager() {
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+  <div className="flex justify-between items-center mb-3">
+    <h3 className="font-bold text-sm text-gray-900 flex items-center">
+      <Paperclip className="h-4 w-4 mr-1" />
+      Archivos adjuntos
+    </h3>
+    <label className="cursor-pointer bg-[#1B4332] text-white text-xs font-medium px-3 py-2 rounded-lg flex items-center hover:bg-[#2a6b50] transition-colors">
+      <Upload className="h-3.5 w-3.5 mr-1" />
+      {uploading ? 'Subiendo...' : 'Subir archivo'}
+      <input
+        type="file"
+        accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+        className="hidden"
+        disabled={uploading}
+        onChange={handleFileUpload}
+      />
+    </label>
+  </div>
+
+  {uploadError && (
+    <div className="mb-3 text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg p-2 flex items-center">
+      <AlertCircle className="h-4 w-4 mr-1 shrink-0" />
+      {uploadError}
+    </div>
+  )}
+
+  {attachments.length === 0 ? (
+    <p className="text-xs text-gray-400">No hay archivos subidos para este paciente.</p>
+  ) : (
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+      {attachments.map((file) => (
+        
+          key={file.id}
+          href={file.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative border border-gray-200 rounded-lg p-2 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+        >
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleDeleteAttachment(file);
+            }}
+            className="absolute -top-1.5 -right-1.5 bg-white border border-gray-200 rounded-full p-0.5 text-gray-400 hover:text-red-500 hover:border-red-200 transition-colors"
+            title="Eliminar archivo"
+          >
+            <Trash2 className="h-3 w-3" />
+          </button>
+
+          {file.type === 'application/pdf' ? (
+            <FileText className="h-6 w-6 text-red-500 mb-1" />
+          ) : (
+            <img src={file.url} alt={file.name} className="h-10 w-10 object-cover rounded mb-1" />
+          )}
+          <span className="text-[11px] text-gray-700 truncate w-full">{file.name}</span>
+          <span className="text-[10px] text-gray-400">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+        </a>
+      ))}
+    </div>
+  )}
+</div>
               {notes.length === 0 ? (
                 <div className="text-center text-gray-400 py-8">
                   <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
